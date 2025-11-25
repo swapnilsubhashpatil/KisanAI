@@ -734,7 +734,7 @@ const CropAdvisory: React.FC = () => {
   if (!mounted) return null;
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50">
+    <div className="relative min-h-screen bg-white">
       <Toaster position="top-right" />
 
       {/* Header Section */}
@@ -747,16 +747,16 @@ const CropAdvisory: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex gap-2 items-center px-4 py-2 mb-4 rounded-full border shadow-lg backdrop-blur-md bg-white/80 border-emerald-500/20"
+            className="inline-flex gap-2 items-center px-4 py-2 mb-4 rounded-full border shadow-lg backdrop-blur-md bg-white/80 border-[#63A361]/20"
           >
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-sm font-semibold text-emerald-600">AI-Powered Crop Advisory</span>
+            <div className="w-2 h-2 bg-[#63A361] rounded-full animate-pulse" />
+            <span className="text-sm font-semibold text-[#63A361]">AI-Powered Crop Advisory</span>
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-600 md:text-4xl"
+            className="text-3xl font-extrabold text-[#5B532C] md:text-4xl"
           >
             Environmental Analysis
           </motion.h1>
@@ -770,71 +770,147 @@ const CropAdvisory: React.FC = () => {
           </motion.p>
         </motion.div>
 
-        {/* Selection Panel */}
+        {/* Selection Panel - Redesigned */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="px-4 mx-auto mb-8 max-w-4xl md:mb-12 sm:px-0"
         >
-          <div className="p-8 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30 bg-white/90">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-700">Select City</label>
-                <select
-                  className="p-4 w-full text-gray-900 rounded-xl border border-emerald-200 backdrop-blur-sm transition-all bg-white/80 hover:border-emerald-300 focus:ring-2 focus:ring-emerald-500"
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                >
-                  <option value="">Choose your city</option>
-                  {[
-                    ...cityData['mahacities'],
-                    ...cityData['andra cities'],
-                    ...cityData['punjab cities'],
-                    ...cityData['karnataka cities'],
-                    ...cityData['kerala cities'],
-                    ...cityData['tamilnadu cities'],
-                    ...cityData['telangana cities']
-                  ].map(city => (
-                    <option key={city} value={city}>{city}</option>
-                  ))}
-                </select>
+          <div className="relative overflow-hidden rounded-3xl border border-[#63A361]/20 shadow-2xl bg-gradient-to-br from-white via-[#FDE7B3]/5 to-[#63A361]/5">
+            {/* Decorative Elements */}
+            <div className="absolute top-0 right-0 w-72 h-72 bg-[#63A361]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#FFC50F]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+            
+            <div className="relative z-10 p-8">
+              {/* Header */}
+              <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-[#63A361] to-[#5B532C] shadow-lg">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-[#5B532C]">Configure Analysis</h2>
+                  <p className="text-sm text-[#5B532C]/60">Select your location and crop for insights</p>
+                </div>
               </div>
 
-              <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-700">Select Crop</label>
-                <select
-                  className="p-4 w-full text-gray-900 rounded-xl border border-emerald-200 backdrop-blur-sm transition-all bg-white/80 hover:border-emerald-300 focus:ring-2 focus:ring-emerald-500"
-                  value={selectedCrop}
-                  onChange={(e) => setSelectedCrop(e.target.value)}
-                >
-                  <option value="">Choose your crop</option>
-                  {cityData.crops.map(crop => (
-                    <option key={crop} value={crop}>{crop}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+              <div className="grid gap-6 md:grid-cols-2">
+                {/* City Selection */}
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-[#5B532C]">
+                    <MapPin className="w-4 h-4 text-[#63A361]" />
+                    Select City
+                  </label>
+                  <div className="relative group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-[#63A361]/10 group-focus-within:bg-[#63A361]/20 transition-colors">
+                      <MapPin className="w-4 h-4 text-[#63A361]" />
+                    </div>
+                    <select
+                      className="w-full py-4 pl-16 pr-10 text-[#5B532C] rounded-xl border-2 border-[#5B532C]/10 bg-white/80 appearance-none cursor-pointer transition-all hover:border-[#63A361]/40 focus:border-[#63A361] focus:bg-white focus:outline-none"
+                      value={selectedCity}
+                      onChange={(e) => setSelectedCity(e.target.value)}
+                    >
+                      <option value="">Choose your city</option>
+                      {[
+                        ...cityData['mahacities'],
+                        ...cityData['andra cities'],
+                        ...cityData['punjab cities'],
+                        ...cityData['karnataka cities'],
+                        ...cityData['kerala cities'],
+                        ...cityData['tamilnadu cities'],
+                        ...cityData['telangana cities']
+                      ].map(city => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <svg className="w-5 h-5 text-[#5B532C]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
 
-            <motion.button
-              onClick={handleAnalytics}
-              disabled={loading || isProcessing}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              className="flex gap-2 justify-center items-center px-6 py-2.5 mt-4 w-full text-sm font-medium text-white bg-emerald-600/90 rounded-lg transition-all hover:bg-emerald-700/90 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading || isProcessing ? (
-                <>
-                  <div className="w-4 h-4 rounded-full border-2 border-white animate-spin border-t-transparent" />
-                  <span>Analyzing...</span>
-                </>
-              ) : (
-                <>
-                  <Activity className="w-4 h-4" />
-                  <span>Get Analysis</span>
-                </>
+                {/* Crop Selection */}
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-[#5B532C]">
+                    <Leaf className="w-4 h-4 text-[#FFC50F]" />
+                    Select Crop
+                  </label>
+                  <div className="relative group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-[#FFC50F]/10 group-focus-within:bg-[#FFC50F]/20 transition-colors">
+                      <Leaf className="w-4 h-4 text-[#FFC50F]" />
+                    </div>
+                    <select
+                      className="w-full py-4 pl-16 pr-10 text-[#5B532C] rounded-xl border-2 border-[#5B532C]/10 bg-white/80 appearance-none cursor-pointer transition-all hover:border-[#63A361]/40 focus:border-[#63A361] focus:bg-white focus:outline-none"
+                      value={selectedCrop}
+                      onChange={(e) => setSelectedCrop(e.target.value)}
+                    >
+                      <option value="">Choose your crop</option>
+                      {cityData.crops.map(crop => (
+                        <option key={crop} value={crop}>{crop}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <svg className="w-5 h-5 text-[#5B532C]/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Generate Button */}
+              <motion.button
+                onClick={handleAnalytics}
+                disabled={loading || isProcessing || !selectedCity || !selectedCrop}
+                whileHover={selectedCity && selectedCrop && !loading ? { scale: 1.02 } : {}}
+                whileTap={selectedCity && selectedCrop && !loading ? { scale: 0.98 } : {}}
+                className={`w-full mt-6 py-4 rounded-2xl font-semibold text-lg shadow-xl transition-all relative overflow-hidden group ${
+                  selectedCity && selectedCrop && !loading && !isProcessing
+                    ? "bg-gradient-to-r from-[#63A361] to-[#5B532C] text-white hover:shadow-2xl hover:shadow-[#63A361]/25"
+                    : "bg-[#5B532C]/20 text-[#5B532C]/50 cursor-not-allowed"
+                }`}
+              >
+                {selectedCity && selectedCrop && !loading && !isProcessing && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#5B532C] to-[#63A361] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                )}
+                
+                <span className="relative z-10 flex items-center justify-center gap-3">
+                  {loading || isProcessing ? (
+                    <>
+                      <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      <span>Analyzing Your Environment...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Activity className="w-5 h-5" />
+                      <span>{selectedCity && selectedCrop ? "Get Environmental Analysis" : "Select city and crop above"}</span>
+                      {selectedCity && selectedCrop && (
+                        <Sparkles className="w-4 h-4" />
+                      )}
+                    </>
+                  )}
+                </span>
+              </motion.button>
+
+              {/* Status Message */}
+              {(!selectedCity || !selectedCrop) && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4 p-4 rounded-xl bg-[#FDE7B3]/30 border border-[#FFC50F]/30"
+                >
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-[#FFC50F] flex-shrink-0" />
+                    <p className="text-sm text-[#5B532C]">
+                      {!selectedCity && !selectedCrop ? "Select both city and crop to continue" :
+                       !selectedCity ? "Please select a city" : "Please select a crop"}
+                    </p>
+                  </div>
+                </motion.div>
               )}
-            </motion.button>
+            </div>
           </div>
         </motion.div>
 
@@ -845,22 +921,22 @@ const CropAdvisory: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="p-6 mb-8 rounded-xl border shadow-lg bg-white border-gray-200"
+            className="p-6 mb-8 rounded-xl border shadow-lg bg-white border-[#5B532C]/10"
           >
             <div className="flex gap-4 items-center">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <Activity className="w-6 h-6 text-emerald-600" />
+                <div className="w-12 h-12 rounded-lg bg-[#FDE7B3]/30 flex items-center justify-center">
+                  <Activity className="w-6 h-6 text-[#63A361]" />
                 </div>
               </div>
 
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                <h3 className="text-lg font-semibold text-[#5B532C] mb-1">
                   Processing Analysis
                 </h3>
 
                 <motion.p
-                  className="text-sm text-gray-600 mb-3"
+                  className="text-sm text-[#5B532C]/70 mb-3"
                   key={aiPipelineStep}
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -869,9 +945,9 @@ const CropAdvisory: React.FC = () => {
                   {aiPipelineStep}
                 </motion.p>
 
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-[#FDE7B3]/50 rounded-full h-2">
                   <motion.div
-                    className="bg-emerald-600 h-2 rounded-full"
+                    className="bg-[#63A361] h-2 rounded-full"
                     initial={{ width: "0%" }}
                     animate={{ width: "100%" }}
                     transition={{
@@ -897,10 +973,10 @@ const CropAdvisory: React.FC = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="flex justify-center items-center p-4 bg-green-50 rounded-xl border border-green-100 shadow-sm"
+              className="flex justify-center items-center p-4 bg-[#FDE7B3]/30 rounded-xl border border-[#63A361]/30 shadow-sm"
             >
-              <CheckCircle2 className="mr-2 w-5 h-5 text-green-600" />
-              <span className="font-medium text-green-700">
+              <CheckCircle2 className="mr-2 w-5 h-5 text-[#63A361]" />
+              <span className="font-medium text-[#63A361]">
                 Environmental Analysis completed successfully
               </span>
             </motion.div>
@@ -913,27 +989,27 @@ const CropAdvisory: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 className={`p-6 rounded-2xl border shadow-xl backdrop-blur-sm ${getRecommendation(analyticsData).isRecommended
-                  ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-100/50'
+                  ? 'bg-[#FDE7B3]/20 border-[#63A361]/30'
                   : 'bg-gradient-to-br from-red-50 to-pink-50 border-red-100/50'
                   }`}
               >
                 <div className="flex gap-3 items-center mb-4">
-                  <div className={`p-3 rounded-xl ${getRecommendation(analyticsData).isRecommended ? 'bg-green-100' : 'bg-red-100'
+                  <div className={`p-3 rounded-xl ${getRecommendation(analyticsData).isRecommended ? 'bg-[#63A361]/10' : 'bg-red-100'
                     }`}>
                     {getRecommendation(analyticsData).isRecommended ? (
-                      <CheckCircle2 className="w-6 h-6 text-green-600" />
+                      <CheckCircle2 className="w-6 h-6 text-[#63A361]" />
                     ) : (
                       <XCircle className="w-6 h-6 text-red-600" />
                     )}
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">Recommendation</h3>
+                  <h3 className="text-lg font-bold text-[#5B532C]">Recommendation</h3>
                 </div>
                 <div className="text-center">
-                  <div className={`text-4xl font-bold mb-2 ${getRecommendation(analyticsData).isRecommended ? 'text-green-600' : 'text-red-600'
+                  <div className={`text-4xl font-bold mb-2 ${getRecommendation(analyticsData).isRecommended ? 'text-[#63A361]' : 'text-red-600'
                     }`}>
                     {getRecommendation(analyticsData).isRecommended ? 'YES' : 'NO'}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-[#5B532C]/70">
                     Confidence: {getRecommendation(analyticsData).confidence}%
                   </div>
                 </div>
@@ -944,19 +1020,19 @@ const CropAdvisory: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border shadow-xl backdrop-blur-sm border-blue-100/50"
+                className="p-6 bg-[#FDE7B3]/20 rounded-2xl border shadow-xl backdrop-blur-sm border-[#63A361]/30"
               >
                 <div className="flex gap-3 items-center mb-4">
-                  <div className="p-3 bg-blue-100 rounded-xl">
-                    <Target className="w-6 h-6 text-blue-600" />
+                  <div className="p-3 bg-[#63A361]/10 rounded-xl">
+                    <Target className="w-6 h-6 text-[#63A361]" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">Match Score</h3>
+                  <h3 className="text-lg font-bold text-[#5B532C]">Match Score</h3>
                 </div>
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-blue-600 mb-2">
+                  <div className="text-4xl font-bold text-[#63A361] mb-2">
                     {analyticsData.cropSuitability.overallScore}%
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-[#5B532C]/70">
                     {analyticsData.cropSuitability.overallScore >= 80 ? 'Excellent' :
                       analyticsData.cropSuitability.overallScore >= 70 ? 'Good' :
                         analyticsData.cropSuitability.overallScore >= 60 ? 'Fair' : 'Poor'}
@@ -969,20 +1045,20 @@ const CropAdvisory: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border shadow-xl backdrop-blur-sm border-amber-100/50"
+                className="p-6 bg-[#FFC50F]/10 rounded-2xl border shadow-xl backdrop-blur-sm border-[#FFC50F]/30"
               >
                 <div className="flex gap-3 items-center mb-4">
-                  <div className="p-3 bg-amber-100 rounded-xl">
-                    <BarChart3 className="w-6 h-6 text-amber-600" />
+                  <div className="p-3 bg-[#FFC50F]/20 rounded-xl">
+                    <BarChart3 className="w-6 h-6 text-[#5B532C]" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">Market Price</h3>
+                  <h3 className="text-lg font-bold text-[#5B532C]">Market Price</h3>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-amber-600 mb-1">
+                  <div className="text-3xl font-bold text-[#5B532C] mb-1">
                     ₹{analyticsData.marketAnalysis.summary.currentPrice.toLocaleString()}
                   </div>
-                  <div className="text-sm text-gray-600 mb-1">per quintal</div>
-                  <div className={`text-sm font-semibold ${analyticsData.marketAnalysis.summary.priceChange >= 0 ? 'text-green-600' : 'text-red-600'
+                  <div className="text-sm text-[#5B532C]/70 mb-1">per quintal</div>
+                  <div className={`text-sm font-semibold ${analyticsData.marketAnalysis.summary.priceChange >= 0 ? 'text-[#63A361]' : 'text-red-600'
                     }`}>
                     {analyticsData.marketAnalysis.summary.priceChange >= 0 ? '+' : ''}
                     {analyticsData.marketAnalysis.summary.priceChange.toFixed(2)}%
@@ -995,19 +1071,19 @@ const CropAdvisory: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border shadow-xl backdrop-blur-sm border-purple-100/50"
+                className="p-6 bg-[#FDE7B3]/20 rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/20"
               >
                 <div className="flex gap-3 items-center mb-4">
-                  <div className="p-3 bg-purple-100 rounded-xl">
-                    <Star className="w-6 h-6 text-purple-600" />
+                  <div className="p-3 bg-[#FFC50F]/20 rounded-xl">
+                    <Star className="w-6 h-6 text-[#FFC50F]" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">Quality Score</h3>
+                  <h3 className="text-lg font-bold text-[#5B532C]">Quality Score</h3>
                 </div>
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-purple-600 mb-2">
+                  <div className="text-4xl font-bold text-[#63A361] mb-2">
                     {analyticsData.qualityMetrics.qualityScore}%
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-[#5B532C]/70">
                     {analyticsData.qualityMetrics.certificationStatus}
                   </div>
                 </div>
@@ -1021,16 +1097,16 @@ const CropAdvisory: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-gray-200"
+                className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/10"
               >
                 <div className="flex gap-3 items-center justify-between mb-6">
                   <div className="flex gap-3 items-center">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <TrendingUp className="w-5 h-5 text-green-600" />
+                    <div className="p-2 bg-[#63A361]/10 rounded-lg">
+                      <TrendingUp className="w-5 h-5 text-[#63A361]" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900">Price Trends & Volume</h3>
+                    <h3 className="text-lg font-semibold text-[#5B532C]">Price Trends & Volume</h3>
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-[#5B532C]/60">
                     Volatility: {analyticsData.marketAnalysis.summary.priceVolatility}%
                   </div>
                 </div>
@@ -1054,15 +1130,15 @@ const CropAdvisory: React.FC = () => {
                         yAxisId="price"
                         type="monotone"
                         dataKey="price"
-                        stroke="#10b981"
-                        fill="#10b981"
+                        stroke="#63A361"
+                        fill="#63A361"
                         fillOpacity={0.3}
                         strokeWidth={3}
                       />
                       <Bar
                         yAxisId="volume"
                         dataKey="volume"
-                        fill="#3b82f6"
+                        fill="#FFC50F"
                         fillOpacity={0.3}
                         radius={[2, 2, 0, 0]}
                       />
@@ -1071,15 +1147,15 @@ const CropAdvisory: React.FC = () => {
                 </div>
                 <div className="mt-4 grid grid-cols-2 gap-4 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Avg Volume:</span>
-                    <span className="font-semibold">
+                    <span className="text-[#5B532C]/70">Avg Volume:</span>
+                    <span className="font-semibold text-[#5B532C]">
                       {Math.round(3000 + Math.random() * 2000).toLocaleString()} tons
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Market Sentiment:</span>
-                    <span className={`font-semibold ${analyticsData.marketAnalysis.summary.marketSentiment === 'Bullish' ? 'text-green-600' :
-                      analyticsData.marketAnalysis.summary.marketSentiment === 'Bearish' ? 'text-red-600' : 'text-yellow-600'
+                    <span className="text-[#5B532C]/70">Market Sentiment:</span>
+                    <span className={`font-semibold ${analyticsData.marketAnalysis.summary.marketSentiment === 'Bullish' ? 'text-[#63A361]' :
+                      analyticsData.marketAnalysis.summary.marketSentiment === 'Bearish' ? 'text-red-600' : 'text-[#FFC50F]'
                       }`}>
                       {analyticsData.marketAnalysis.summary.marketSentiment}
                     </span>
@@ -1092,16 +1168,16 @@ const CropAdvisory: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-gray-200"
+                className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/10"
               >
                 <div className="flex gap-3 items-center justify-between mb-6">
                   <div className="flex gap-3 items-center">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <PieChart className="w-5 h-5 text-purple-600" />
+                    <div className="p-2 bg-[#FFC50F]/20 rounded-lg">
+                      <PieChart className="w-5 h-5 text-[#5B532C]" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900">Quality Distribution</h3>
+                    <h3 className="text-lg font-semibold text-[#5B532C]">Quality Distribution</h3>
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-[#5B532C]/60">
                     Export Ready: {analyticsData.qualityMetrics.exportQuality ? 'Yes' : 'No'}
                   </div>
                 </div>
@@ -1110,9 +1186,9 @@ const CropAdvisory: React.FC = () => {
                     <RechartsPieChart>
                       <Pie
                         data={[
-                          { name: "Premium", value: analyticsData.qualityMetrics.gradeDistribution.premium, color: "#10b981" },
-                          { name: "Standard", value: analyticsData.qualityMetrics.gradeDistribution.standard, color: "#059669" },
-                          { name: "Substandard", value: analyticsData.qualityMetrics.gradeDistribution.substandard, color: "#047857" }
+                          { name: "Premium", value: analyticsData.qualityMetrics.gradeDistribution.premium, color: "#63A361" },
+                          { name: "Standard", value: analyticsData.qualityMetrics.gradeDistribution.standard, color: "#FFC50F" },
+                          { name: "Substandard", value: analyticsData.qualityMetrics.gradeDistribution.substandard, color: "#5B532C" }
                         ]}
                         cx="50%"
                         cy="50%"
@@ -1121,9 +1197,9 @@ const CropAdvisory: React.FC = () => {
                         label={({ name, percent }) => `${name} ${((percent as number) * 100).toFixed(0)}%`}
                       >
                         {[
-                          { name: "Premium", value: analyticsData.qualityMetrics.gradeDistribution.premium, color: "#10b981" },
-                          { name: "Standard", value: analyticsData.qualityMetrics.gradeDistribution.standard, color: "#059669" },
-                          { name: "Substandard", value: analyticsData.qualityMetrics.gradeDistribution.substandard, color: "#047857" }
+                          { name: "Premium", value: analyticsData.qualityMetrics.gradeDistribution.premium, color: "#63A361" },
+                          { name: "Standard", value: analyticsData.qualityMetrics.gradeDistribution.standard, color: "#FFC50F" },
+                          { name: "Substandard", value: analyticsData.qualityMetrics.gradeDistribution.substandard, color: "#5B532C" }
                         ].map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
@@ -1135,9 +1211,9 @@ const CropAdvisory: React.FC = () => {
                 <div className="mt-4 space-y-2">
                   {analyticsData.qualityMetrics.qualityParameters.slice(0, 2).map((param, index) => (
                     <div key={index} className="flex justify-between items-center text-xs">
-                      <span className="text-gray-600">{param.parameter}:</span>
-                      <span className={`font-semibold ${param.status === 'Good' || param.status === 'Excellent' ? 'text-green-600' :
-                        param.status === 'High' || param.status === 'Below Standard' ? 'text-red-600' : 'text-yellow-600'
+                      <span className="text-[#5B532C]/70">{param.parameter}:</span>
+                      <span className={`font-semibold ${param.status === 'Good' || param.status === 'Excellent' ? 'text-[#63A361]' :
+                        param.status === 'High' || param.status === 'Below Standard' ? 'text-red-600' : 'text-[#FFC50F]'
                         }`}>
                         {param.value}{param.unit} ({param.status})
                       </span>
@@ -1152,33 +1228,33 @@ const CropAdvisory: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-gray-200"
+              className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/10"
             >
               <div className="flex gap-3 items-center mb-6">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Brain className="w-5 h-5 text-blue-600" />
+                <div className="p-2 bg-[#63A361]/10 rounded-lg">
+                  <Brain className="w-5 h-5 text-[#63A361]" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">AI Market Insights & Alerts</h3>
+                <h3 className="text-lg font-semibold text-[#5B532C]">AI Market Insights & Alerts</h3>
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {getMarketInsights(analyticsData, selectedCrop).map((insight, index) => (
                   <div key={index} className={`p-4 rounded-lg border ${insight.severity === 'high' ? 'bg-red-50 border-red-200' :
-                    insight.severity === 'medium' ? 'bg-yellow-50 border-yellow-200' :
-                      'bg-blue-50 border-blue-200'
+                    insight.severity === 'medium' ? 'bg-[#FFC50F]/10 border-[#FFC50F]/30' :
+                      'bg-[#FDE7B3]/20 border-[#63A361]/30'
                     }`}>
                     <div className={`flex gap-2 items-center mb-2 ${insight.severity === 'high' ? 'text-red-600' :
-                      insight.severity === 'medium' ? 'text-yellow-600' : 'text-blue-600'
+                      insight.severity === 'medium' ? 'text-[#5B532C]' : 'text-[#63A361]'
                       }`}>
                       <AlertCircle className="w-4 h-4" />
                       <span className="text-sm font-semibold capitalize">{insight.type.replace('_', ' ')}</span>
                     </div>
-                    <p className="text-sm text-gray-700 mb-2">{insight.message}</p>
-                    <p className="text-xs text-gray-600">{insight.recommendation}</p>
+                    <p className="text-sm text-[#5B532C] mb-2">{insight.message}</p>
+                    <p className="text-xs text-[#5B532C]/70">{insight.recommendation}</p>
                   </div>
                 ))}
                 {getMarketInsights(analyticsData, selectedCrop).length === 0 && (
-                  <div className="col-span-full text-center py-8 text-gray-500">
-                    <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                  <div className="col-span-full text-center py-8 text-[#5B532C]/60">
+                    <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-[#63A361]" />
                     <p>No critical alerts detected. Market conditions are stable.</p>
                   </div>
                 )}
@@ -1190,55 +1266,55 @@ const CropAdvisory: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-gray-200"
+              className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/10"
             >
               <div className="flex gap-3 items-center mb-6">
-                <div className="p-2 bg-indigo-100 rounded-lg">
-                  <BarChart3 className="w-5 h-5 text-indigo-600" />
+                <div className="p-2 bg-[#FDE7B3]/30 rounded-lg">
+                  <BarChart3 className="w-5 h-5 text-[#5B532C]" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Alternative Crop Analysis</h3>
+                <h3 className="text-lg font-semibold text-[#5B532C]">Alternative Crop Analysis</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-2 font-semibold text-gray-700">Crop</th>
-                      <th className="text-left py-2 font-semibold text-gray-700">Price/Quintal</th>
-                      <th className="text-left py-2 font-semibold text-gray-700">Suitability</th>
-                      <th className="text-left py-2 font-semibold text-gray-700">Market Demand</th>
-                      <th className="text-left py-2 font-semibold text-gray-700">Risk Level</th>
+                    <tr className="border-b border-[#5B532C]/20">
+                      <th className="text-left py-2 font-semibold text-[#5B532C]">Crop</th>
+                      <th className="text-left py-2 font-semibold text-[#5B532C]">Price/Quintal</th>
+                      <th className="text-left py-2 font-semibold text-[#5B532C]">Suitability</th>
+                      <th className="text-left py-2 font-semibold text-[#5B532C]">Market Demand</th>
+                      <th className="text-left py-2 font-semibold text-[#5B532C]">Risk Level</th>
                     </tr>
                   </thead>
                   <tbody>
                     {getComparativeAnalysis(analyticsData, selectedCrop).map((crop, index) => (
-                      <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="py-3 font-medium text-gray-900">{crop.crop}</td>
-                        <td className="py-3">₹{crop.price.toLocaleString()}</td>
+                      <tr key={index} className="border-b border-[#5B532C]/10 hover:bg-[#FDE7B3]/10">
+                        <td className="py-3 font-medium text-[#5B532C]">{crop.crop}</td>
+                        <td className="py-3 text-[#5B532C]">₹{crop.price.toLocaleString()}</td>
                         <td className="py-3">
                           <div className="flex items-center gap-2">
-                            <div className="w-16 bg-gray-200 rounded-full h-2">
+                            <div className="w-16 bg-[#FDE7B3]/50 rounded-full h-2">
                               <div
-                                className="bg-blue-500 h-2 rounded-full"
+                                className="bg-[#63A361] h-2 rounded-full"
                                 style={{ width: `${crop.suitability}%` }}
                               />
                             </div>
-                            <span className="text-xs">{crop.suitability}%</span>
+                            <span className="text-xs text-[#5B532C]">{crop.suitability}%</span>
                           </div>
                         </td>
                         <td className="py-3">
                           <div className="flex items-center gap-2">
-                            <div className="w-16 bg-gray-200 rounded-full h-2">
+                            <div className="w-16 bg-[#FDE7B3]/50 rounded-full h-2">
                               <div
-                                className="bg-green-500 h-2 rounded-full"
+                                className="bg-[#FFC50F] h-2 rounded-full"
                                 style={{ width: `${crop.market_demand}%` }}
                               />
                             </div>
-                            <span className="text-xs">{crop.market_demand}%</span>
+                            <span className="text-xs text-[#5B532C]">{crop.market_demand}%</span>
                           </div>
                         </td>
                         <td className="py-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${crop.risk_level === 'Low' ? 'bg-green-100 text-green-800' :
-                            crop.risk_level === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${crop.risk_level === 'Low' ? 'bg-[#63A361]/10 text-[#63A361]' :
+                            crop.risk_level === 'Medium' ? 'bg-[#FFC50F]/20 text-[#5B532C]' :
                               'bg-red-100 text-red-800'
                             }`}>
                             {crop.risk_level}
@@ -1256,30 +1332,30 @@ const CropAdvisory: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9 }}
-              className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-gray-200"
+              className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/10"
             >
               <div className="flex gap-3 items-center mb-6">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <Leaf className="w-5 h-5 text-green-600" />
+                <div className="p-2 bg-[#63A361]/10 rounded-lg">
+                  <Leaf className="w-5 h-5 text-[#63A361]" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Yield Predictions (Tons/Acre)</h3>
+                <h3 className="text-lg font-semibold text-[#5B532C]">Yield Predictions (Tons/Acre)</h3>
               </div>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 {Object.entries(getYieldPredictions(analyticsData)).slice(0, 3).map(([scenario, value], index) => (
-                  <div key={scenario} className="text-center p-4 rounded-lg border border-gray-200">
-                    <div className={`text-3xl font-bold mb-2 ${scenario === 'optimistic' ? 'text-green-600' :
-                      scenario === 'realistic' ? 'text-blue-600' : 'text-orange-600'
+                  <div key={scenario} className="text-center p-4 rounded-lg border border-[#5B532C]/10">
+                    <div className={`text-3xl font-bold mb-2 ${scenario === 'optimistic' ? 'text-[#63A361]' :
+                      scenario === 'realistic' ? 'text-[#5B532C]' : 'text-[#FFC50F]'
                       }`}>
                       {value as number}
                     </div>
-                    <div className="text-sm text-gray-600 capitalize">{scenario}</div>
-                    <div className="text-xs text-gray-500 mt-1">
+                    <div className="text-sm text-[#5B532C]/70 capitalize">{scenario}</div>
+                    <div className="text-xs text-[#5B532C]/50 mt-1">
                       Confidence: {getYieldPredictions(analyticsData).confidence}%
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 text-xs text-gray-600">
+              <div className="mt-4 text-xs text-[#5B532C]/70">
                 <strong>Key Factors:</strong> {getYieldPredictions(analyticsData).factors.join(', ')}
               </div>
             </motion.div>
@@ -1289,20 +1365,20 @@ const CropAdvisory: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-gray-200"
+              className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/10"
             >
               <div className="flex gap-3 items-center mb-6">
                 <div className="p-2 bg-red-100 rounded-lg">
                   <Shield className="w-5 h-5 text-red-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Risk Assessment (100% Scale)</h3>
+                <h3 className="text-lg font-semibold text-[#5B532C]">Risk Assessment (100% Scale)</h3>
               </div>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
                 {Object.entries(getRiskAssessment(analyticsData)).map(([key, value], index) => (
                   <div key={key} className="text-center">
                     <div className="text-3xl font-bold text-red-600 mb-2">{value}%</div>
-                    <div className="text-sm text-gray-600 capitalize">{key} Risk</div>
-                    <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                    <div className="text-sm text-[#5B532C]/70 capitalize">{key} Risk</div>
+                    <div className="mt-2 w-full bg-[#FDE7B3]/50 rounded-full h-2">
                       <motion.div
                         className="bg-red-500 h-2 rounded-full"
                         initial={{ width: "0%" }}
@@ -1321,19 +1397,19 @@ const CropAdvisory: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-gray-200"
+                className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/10"
               >
                 <div className="flex gap-3 items-center mb-6">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <Zap className="w-5 h-5 text-green-600" />
+                  <div className="p-2 bg-[#63A361]/10 rounded-lg">
+                    <Zap className="w-5 h-5 text-[#63A361]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Key Solutions</h3>
+                  <h3 className="text-lg font-semibold text-[#5B532C]">Key Solutions</h3>
                 </div>
                 <div className="space-y-3">
                   {getKeyPoints(analyticsData).solutions.map((solution, index) => (
                     <div key={index} className="flex gap-3 items-start">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                      <span className="text-sm text-gray-700">{solution}</span>
+                      <div className="w-2 h-2 bg-[#63A361] rounded-full mt-2"></div>
+                      <span className="text-sm text-[#5B532C]">{solution}</span>
                     </div>
                   ))}
                 </div>
@@ -1343,19 +1419,19 @@ const CropAdvisory: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9 }}
-                className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-gray-200"
+                className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#5B532C]/10"
               >
                 <div className="flex gap-3 items-center mb-6">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-orange-600" />
+                  <div className="p-2 bg-[#FFC50F]/20 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-[#FFC50F]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Precautions</h3>
+                  <h3 className="text-lg font-semibold text-[#5B532C]">Precautions</h3>
                 </div>
                 <div className="space-y-3">
                   {getKeyPoints(analyticsData).precautions.map((precaution, index) => (
                     <div key={index} className="flex gap-3 items-start">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
-                      <span className="text-sm text-gray-700">{precaution}</span>
+                      <div className="w-2 h-2 bg-[#FFC50F] rounded-full mt-2"></div>
+                      <span className="text-sm text-[#5B532C]">{precaution}</span>
                     </div>
                   ))}
                 </div>
@@ -1367,10 +1443,10 @@ const CropAdvisory: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.0 }}
-              className="flex justify-center items-center p-4 bg-blue-50 rounded-xl border border-blue-100 shadow-sm"
+              className="flex justify-center items-center p-4 bg-[#FDE7B3]/30 rounded-xl border border-[#63A361]/30 shadow-sm"
             >
-              <Calendar className="mr-2 w-5 h-5 text-blue-600" />
-              <span className="font-medium text-blue-700">
+              <Calendar className="mr-2 w-5 h-5 text-[#63A361]" />
+              <span className="font-medium text-[#63A361]">
                 Next Analysis: {nextCheckDate.toLocaleDateString('en-US', {
                   weekday: 'long',
                   year: 'numeric',
@@ -1382,18 +1458,169 @@ const CropAdvisory: React.FC = () => {
           </motion.div>
         )}
 
-        {/* Empty State */}
+        {/* Empty State - Enhanced Placeholder */}
         {!showAnalysis && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-12 text-center rounded-2xl border backdrop-blur-sm bg-white/50 border-emerald-100/50"
+            className="space-y-8"
           >
-            <div className="inline-block p-6 mb-6 bg-emerald-50 rounded-2xl">
-              <AlertCircle className="w-12 h-12 text-emerald-600" />
+            {/* Hero Placeholder */}
+            <div className="relative p-8 text-center bg-gradient-to-br from-[#FDE7B3]/30 via-white to-[#63A361]/5 rounded-3xl border border-[#63A361]/20 overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#63A361]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#FFC50F]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+              
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="relative z-10"
+              >
+                <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-[#63A361] to-[#5B532C] shadow-lg">
+                  <Leaf className="w-10 h-10 text-white" />
             </div>
-            <h3 className="text-lg font-medium text-gray-700">Ready to Help</h3>
-            <p className="text-gray-500">Pick a city and crop to get farming advice</p>
+                <h3 className="mb-3 text-2xl font-bold text-[#5B532C]">
+                  Environmental Advisory System
+                </h3>
+                <p className="max-w-md mx-auto mb-6 text-[#5B532C]/70">
+                  Select your city and crop above to receive AI-powered farming recommendations, market analysis, and risk assessments
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full border border-[#63A361]/20">
+                    <MapPin className="w-4 h-4 text-[#63A361]" />
+                    <span className="text-sm text-[#5B532C]">Regional Analysis</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full border border-[#FFC50F]/20">
+                    <TrendingUp className="w-4 h-4 text-[#FFC50F]" />
+                    <span className="text-sm text-[#5B532C]">Market Trends</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full border border-[#5B532C]/20">
+                    <Shield className="w-4 h-4 text-[#5B532C]" />
+                    <span className="text-sm text-[#5B532C]">Risk Assessment</span>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Preview Cards Grid */}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {[
+                { icon: CheckCircle2, title: "Recommendation", desc: "Yes/No with confidence score", color: "#63A361" },
+                { icon: Target, title: "Match Score", desc: "Soil & climate compatibility", color: "#63A361" },
+                { icon: BarChart3, title: "Market Price", desc: "Current rates & trends", color: "#FFC50F" },
+                { icon: Star, title: "Quality Score", desc: "Expected crop quality", color: "#5B532C" }
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i }}
+                  className="relative overflow-hidden p-5 rounded-xl bg-gradient-to-br from-[#FDE7B3]/20 to-white border border-[#63A361]/10"
+                >
+                  <div className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 rounded-lg" style={{ backgroundColor: `${item.color}15` }}>
+                      <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                    </div>
+                    <h4 className="font-semibold text-[#5B532C]">{item.title}</h4>
+                  </div>
+                  <div className="h-10 w-24 bg-[#FDE7B3]/30 rounded-lg mb-2 animate-pulse" />
+                  <p className="text-xs text-[#5B532C]/60">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Mock Charts */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              {/* Mock Line Chart */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="p-6 rounded-xl bg-white border border-[#63A361]/10"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-[#63A361]/10">
+                    <TrendingUp className="w-5 h-5 text-[#63A361]" />
+                  </div>
+                  <span className="font-semibold text-[#5B532C]">Price Trends & Volume</span>
+                </div>
+                <div className="relative h-48">
+                  <svg className="w-full h-full" viewBox="0 0 400 150">
+                    {[0, 1, 2, 3].map(i => (
+                      <line key={i} x1="30" y1={20 + i * 35} x2="380" y2={20 + i * 35} stroke="#63A361" strokeOpacity="0.1" />
+                    ))}
+                    <motion.path
+                      d="M 30 120 Q 80 100, 130 110 T 200 80 T 270 90 T 340 60 T 380 70"
+                      fill="none" stroke="#63A361" strokeWidth="3" strokeOpacity="0.4"
+                      initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                      transition={{ duration: 2, repeat: Infinity, repeatType: "loop" }}
+                    />
+                    <motion.path
+                      d="M 30 130 Q 80 120, 130 125 T 200 100 T 270 110 T 340 90 T 380 95"
+                      fill="none" stroke="#FFC50F" strokeWidth="3" strokeOpacity="0.4"
+                      initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                      transition={{ duration: 2, delay: 0.5, repeat: Infinity, repeatType: "loop" }}
+                    />
+                  </svg>
+                </div>
+              </motion.div>
+
+              {/* Mock Pie Chart */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="p-6 rounded-xl bg-white border border-[#63A361]/10"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-[#FFC50F]/10">
+                    <PieChart className="w-5 h-5 text-[#FFC50F]" />
+                  </div>
+                  <span className="font-semibold text-[#5B532C]">Quality Distribution</span>
+                </div>
+                <div className="flex items-center justify-center h-48">
+                  <svg className="w-36 h-36" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#5B532C" strokeWidth="20" strokeOpacity="0.2" />
+                    <motion.circle
+                      cx="50" cy="50" r="40" fill="none" stroke="#63A361" strokeWidth="20"
+                      strokeDasharray="251.2" strokeDashoffset="100"
+                      initial={{ strokeDashoffset: 251.2 }} animate={{ strokeDashoffset: 100 }}
+                      transition={{ duration: 1.5, ease: "easeOut" }}
+                      style={{ transformOrigin: "center", transform: "rotate(-90deg)" }}
+                    />
+                    <motion.circle
+                      cx="50" cy="50" r="40" fill="none" stroke="#FFC50F" strokeWidth="20"
+                      strokeDasharray="251.2" strokeDashoffset="175"
+                      initial={{ strokeDashoffset: 251.2 }} animate={{ strokeDashoffset: 175 }}
+                      transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
+                      style={{ transformOrigin: "center", transform: "rotate(-90deg)" }}
+                    />
+                  </svg>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Features Preview */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { icon: Brain, title: "AI Insights" },
+                { icon: Zap, title: "Key Solutions" },
+                { icon: AlertCircle, title: "Risk Alerts" },
+                { icon: Calendar, title: "Schedule" }
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.7 + i * 0.1 }}
+                  className="p-4 text-center rounded-xl bg-[#FDE7B3]/10 border border-[#63A361]/10"
+                >
+                  <item.icon className="w-6 h-6 mx-auto mb-2 text-[#63A361]" />
+                  <span className="text-sm font-medium text-[#5B532C]">{item.title}</span>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         )}
 
@@ -1404,9 +1631,9 @@ const CropAdvisory: React.FC = () => {
           transition={{ delay: 0.8 }}
           className="mt-16 text-center"
         >
-          <div className="inline-flex gap-2 items-center px-6 py-3 rounded-full border shadow-lg backdrop-blur-sm border-emerald-100/50 bg-white/80">
-            <Activity className="w-4 h-4 text-emerald-600" />
-            <span className="text-sm font-semibold text-gray-600">Powered by AI & Farm Data</span>
+          <div className="inline-flex gap-2 items-center px-6 py-3 rounded-full border shadow-lg backdrop-blur-sm border-[#63A361]/20 bg-white/80">
+            <Activity className="w-4 h-4 text-[#63A361]" />
+            <span className="text-sm font-semibold text-[#5B532C]">Powered by AI & Farm Data</span>
           </div>
         </motion.div>
       </div>

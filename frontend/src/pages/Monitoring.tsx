@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
-import { Upload, Leaf, Mountain, Thermometer, Plane, Loader } from 'lucide-react';
+import { Upload, Leaf, Mountain, Thermometer, Plane, Loader, Camera, Sparkles } from 'lucide-react';
+
+// Simple cn utility
+const cn = (...classes: (string | boolean | undefined)[]) => classes.filter(Boolean).join(' ');
 import { 
   analyzeCropImage, 
   analyzeSoilImage, 
@@ -25,40 +28,40 @@ const MONITORING_TYPES = [
     icon: Leaf,
     title: 'Crop Image',
     description: 'Detect diseases, pests, and nutrient deficiencies',
-    color: 'green',
-    bgGradient: 'from-green-50 to-emerald-50',
-    iconColor: 'text-green-600',
-    borderColor: 'border-green-200',
+    color: 'consult-green',
+    bgGradient: 'from-[#FDE7B3]/20 to-[#63A361]/10',
+    iconColor: 'text-[#63A361]',
+    borderColor: 'border-[#63A361]/20',
   },
   {
     type: 'soil' as MonitoringType,
     icon: Mountain,
     title: 'Soil Image',
     description: 'Analyze soil moisture, fertility, and composition',
-    color: 'amber',
-    bgGradient: 'from-amber-50 to-orange-50',
-    iconColor: 'text-amber-600',
-    borderColor: 'border-amber-200',
+    color: 'consult-yellow',
+    bgGradient: 'from-[#FDE7B3]/20 to-[#FFC50F]/10',
+    iconColor: 'text-[#FFC50F]',
+    borderColor: 'border-[#FFC50F]/20',
   },
   {
     type: 'thermal' as MonitoringType,
     icon: Thermometer,
     title: 'Thermal Image',
     description: 'Identify water stress and irrigation issues',
-    color: 'red',
-    bgGradient: 'from-red-50 to-pink-50',
-    iconColor: 'text-red-600',
-    borderColor: 'border-red-200',
+    color: 'consult-brown',
+    bgGradient: 'from-[#FDE7B3]/20 to-[#5B532C]/10',
+    iconColor: 'text-[#5B532C]',
+    borderColor: 'border-[#5B532C]/20',
   },
   {
     type: 'field' as MonitoringType,
     icon: Plane,
     title: 'Field Image (Drone)',
     description: 'Assess crop growth and field uniformity',
-    color: 'blue',
-    bgGradient: 'from-blue-50 to-cyan-50',
-    iconColor: 'text-blue-600',
-    borderColor: 'border-blue-200',
+    color: 'consult-light-yellow',
+    bgGradient: 'from-[#FDE7B3]/20 to-[#FDE7B3]/10',
+    iconColor: 'text-[#63A361]',
+    borderColor: 'border-[#FDE7B3]/20',
   },
 ];
 
@@ -188,7 +191,7 @@ const Monitoring: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30 py-12 px-4">
+    <div className="min-h-screen bg-white py-12 px-4">
       <Toaster position="top-right" />
       
       <div className="max-w-6xl mx-auto">
@@ -198,7 +201,7 @@ const Monitoring: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 mb-4">
+          <h1 className="text-4xl font-bold text-[#5B532C] mb-4">
             Smart Monitoring System
           </h1>
           <p className="text-gray-600 text-lg">
@@ -211,31 +214,165 @@ const Monitoring: React.FC = () => {
           {!image && !analysisResult && (
             <motion.div
               key="upload"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               className="mb-8"
             >
+              <div className="p-8 bg-white rounded-2xl border border-[#5B532C]/10">
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-[#5B532C]/10">
+                  <div className="p-3 rounded-xl bg-[#63A361]">
+                    <Camera className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-[#5B532C]">Upload Your Image</h2>
+                    <p className="text-sm text-[#5B532C]/60">Start by uploading an image for AI analysis</p>
+                  </div>
+                </div>
+                
+                {/* Drop Zone */}
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
                 <div
-                  className={`relative p-12 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+                    className={cn(
+                      "p-10 rounded-xl border-2 border-dashed cursor-pointer transition-colors",
                     isDragActive
-                      ? 'border-green-400 bg-green-50'
-                      : 'border-gray-300 bg-white hover:border-green-400 hover:bg-gray-50'
-                  }`}
+                        ? "border-[#63A361] bg-[#63A361]/5"
+                        : "border-[#5B532C]/20 bg-[#FDE7B3]/10"
+                    )}
                 >
                   <div className="text-center">
-                    <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      Upload Image for Monitoring
+                      <div className={cn(
+                        "w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center",
+                        isDragActive ? "bg-[#63A361]" : "bg-[#63A361]/10"
+                      )}>
+                        <Upload className={cn("w-8 h-8", isDragActive ? "text-white" : "text-[#63A361]")} />
+                      </div>
+                      <h3 className="text-lg font-bold text-[#5B532C] mb-2">
+                        {isDragActive ? "Drop your image here" : "Upload Image for Monitoring"}
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                      <p className="text-[#5B532C]/60 mb-4 text-sm">
                       Drag & drop your image here, or click to browse
                     </p>
-                    <p className="text-sm text-gray-500">
-                      Supports: JPEG, PNG, WebP (Max 10MB)
-                    </p>
+                      <div className="flex items-center justify-center gap-2 flex-wrap">
+                        {["JPEG", "PNG", "WebP"].map((format) => (
+                          <span key={format} className="px-2 py-1 rounded text-xs font-medium bg-[#5B532C]/10 text-[#5B532C]">
+                            {format}
+                          </span>
+                        ))}
+                        <span className="px-2 py-1 rounded text-xs font-medium bg-[#63A361]/10 text-[#63A361]">
+                          Max 10MB
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Monitoring Types Preview */}
+              <div className="mt-8 mb-6">
+                <p className="text-center text-sm font-semibold text-[#5B532C]/60 mb-4">Analysis Types Available</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {MONITORING_TYPES.map((type) => (
+                    <div
+                      key={type.type}
+                      className="p-4 rounded-xl bg-white border border-[#5B532C]/10 text-center"
+                    >
+                      <div className={cn(
+                        "w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center",
+                        type.type === 'crop' ? "bg-[#63A361]/10" :
+                        type.type === 'soil' ? "bg-[#FFC50F]/10" :
+                        type.type === 'thermal' ? "bg-red-100" :
+                        "bg-blue-100"
+                      )}>
+                        <type.icon className={cn(
+                          "w-6 h-6",
+                          type.type === 'crop' ? "text-[#63A361]" :
+                          type.type === 'soil' ? "text-[#FFC50F]" :
+                          type.type === 'thermal' ? "text-red-500" :
+                          "text-blue-500"
+                        )} />
+                      </div>
+                      <h4 className="font-semibold text-[#5B532C] mb-1 text-sm">{type.title}</h4>
+                      <p className="text-xs text-[#5B532C]/60">{type.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Features Preview Section */}
+              <div className="space-y-6">
+                {/* What You'll Get Section */}
+                <div className="p-6 rounded-xl bg-[#FDE7B3]/10 border border-[#5B532C]/10">
+                  <h3 className="text-center text-lg font-semibold text-[#5B532C] mb-6">
+                    AI-Powered Insights Await
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    {[
+                      { title: "Health Analysis", desc: "Disease detection & severity assessment", IconComp: Leaf },
+                      { title: "Recommendations", desc: "Treatment plans & preventive measures", IconComp: Sparkles },
+                      { title: "Visual Reports", desc: "Charts, metrics & confidence scores", IconComp: Mountain }
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="p-4 rounded-xl bg-white border border-[#5B532C]/10 text-center"
+                      >
+                        <div className="w-10 h-10 mx-auto mb-2 rounded-lg bg-[#63A361]/10 flex items-center justify-center">
+                          <item.IconComp className="w-5 h-5 text-[#63A361]" />
+                        </div>
+                        <h4 className="font-semibold text-[#5B532C] mb-1">{item.title}</h4>
+                        <p className="text-xs text-[#5B532C]/60">{item.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Mock Results Preview */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Mock Health Metrics */}
+                    <div className="p-4 rounded-xl bg-white border border-[#5B532C]/10">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#63A361]/10 flex items-center justify-center">
+                          <Leaf className="w-4 h-4 text-[#63A361]" />
+                        </div>
+                        <span className="font-semibold text-[#5B532C]">Health Metrics</span>
+                      </div>
+                      <div className="space-y-2">
+                        {["Plant Health", "Leaf Condition", "Growth Stage"].map((label, i) => (
+                          <div key={i} className="flex items-center justify-between">
+                            <span className="text-xs text-[#5B532C]/60">{label}</span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-20 h-2 bg-[#5B532C]/10 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-[#63A361] rounded-full"
+                                  style={{ width: `${[85, 72, 90][i]}%` }}
+                                />
+                              </div>
+                              <span className="text-xs font-medium text-[#5B532C]/60">{[85, 72, 90][i]}%</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Mock Detection */}
+                    <div className="p-4 rounded-xl bg-white border border-[#5B532C]/10">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#FFC50F]/10 flex items-center justify-center">
+                          <Mountain className="w-4 h-4 text-[#FFC50F]" />
+                        </div>
+                        <span className="font-semibold text-[#5B532C]">Detection Results</span>
+                      </div>
+                      <div className="space-y-2">
+                        {["Primary Issue", "Severity", "Confidence"].map((label, i) => (
+                          <div key={i} className="flex items-center justify-between">
+                            <span className="text-xs text-[#5B532C]/60">{label}</span>
+                            <div className="h-4 w-20 bg-[#5B532C]/10 rounded" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -246,50 +383,66 @@ const Monitoring: React.FC = () => {
           {image && !selectedType && !analysisResult && !isAnalyzing && (
             <motion.div
               key="type-selection"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               className="mb-8"
             >
-              {/* Show uploaded image preview */}
-              <div className="mb-6 text-center">
+              <div className="p-8 bg-white rounded-2xl border border-[#5B532C]/10">
+                {/* Image Preview Section */}
+                <div className="flex flex-col md:flex-row gap-8 items-center mb-8 pb-8 border-b border-[#5B532C]/10">
                 <img
                   src={image}
                   alt="Uploaded"
-                  className="w-full max-w-md mx-auto rounded-lg shadow-md mb-4"
-                />
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                    className="w-40 h-40 object-cover rounded-xl border border-[#5B532C]/10"
+                  />
+                  
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#63A361]/10 text-[#63A361] text-sm font-medium mb-3">
+                      <span className="w-2 h-2 rounded-full bg-[#63A361]" />
+                      Image Ready
+                    </div>
+                    <h2 className="text-xl font-bold text-[#5B532C] mb-2">Choose Analysis Type</h2>
+                    <p className="text-[#5B532C]/60 mb-4 text-sm">Select the type of monitoring for your image</p>
+                    <button
                   onClick={resetAnalysis}
-                  className="text-sm text-gray-600 hover:text-gray-900 underline"
-                >
-                  Upload Different Image
-                </motion.button>
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#5B532C] border border-[#5B532C]/20 bg-white"
+                    >
+                      <Upload className="w-4 h-4" />
+                      Change Image
+                    </button>
+                  </div>
               </div>
 
-              <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-                Select Monitoring Type
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Type Selection Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {MONITORING_TYPES.map((type) => (
-                  <motion.button
+                    <button
                     key={type.type}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
                     onClick={() => handleTypeSelection(type.type)}
                     disabled={isAnalyzing}
-                    className={`p-6 rounded-xl border-2 transition-all ${
-                      isAnalyzing
-                        ? 'opacity-50 cursor-not-allowed border-gray-200 bg-gray-50'
-                        : `border-gray-200 bg-white hover:border-${type.color}-300 hover:bg-gradient-to-br hover:${type.bgGradient}`
-                    }`}
-                  >
-                    <type.icon className={`w-8 h-8 mx-auto mb-3 ${type.iconColor}`} />
-                    <h3 className="font-semibold text-gray-900 mb-2">{type.title}</h3>
-                    <p className="text-xs text-gray-600">{type.description}</p>
-                  </motion.button>
-                ))}
+                      className="p-5 rounded-xl border-2 border-[#5B532C]/10 bg-white text-center transition-colors hover:border-[#63A361] hover:bg-[#63A361]/5"
+                    >
+                      <div className={cn(
+                        "w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center",
+                        type.type === 'crop' ? "bg-[#63A361]/10" :
+                        type.type === 'soil' ? "bg-[#FFC50F]/10" :
+                        type.type === 'thermal' ? "bg-red-100" :
+                        "bg-blue-100"
+                      )}>
+                        <type.icon className={cn(
+                          "w-6 h-6",
+                          type.type === 'crop' ? "text-[#63A361]" :
+                          type.type === 'soil' ? "text-[#FFC50F]" :
+                          type.type === 'thermal' ? "text-red-500" :
+                          "text-blue-500"
+                        )} />
+                      </div>
+                      <h3 className="font-semibold text-[#5B532C] mb-1">{type.title}</h3>
+                      <p className="text-xs text-[#5B532C]/60">{type.description}</p>
+                    </button>
+                  ))}
+                </div>
               </div>
             </motion.div>
           )}
@@ -303,13 +456,13 @@ const Monitoring: React.FC = () => {
               exit={{ opacity: 0 }}
               className="max-w-2xl mx-auto"
             >
-              <div className="bg-white rounded-2xl shadow-xl p-8 border">
+                  <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#63A361]/20">
                 <div className="text-center mb-8">
-                  <Loader className="w-16 h-16 mx-auto mb-4 text-green-600 animate-spin" />
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                  <Loader className="w-16 h-16 mx-auto mb-4 text-[#63A361] animate-spin" />
+                  <h3 className="text-2xl font-semibold text-[#5B532C] mb-2">
                     Analyzing {MONITORING_TYPES.find((t) => t.type === selectedType)?.title}
                   </h3>
-                  <p className="text-gray-600">AI processing in progress...</p>
+                  <p className="text-[#5B532C]/70">AI processing in progress...</p>
                 </div>
 
                 {/* Processing Steps */}
@@ -320,22 +473,22 @@ const Monitoring: React.FC = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center gap-3 p-3 bg-[#FDE7B3]/10 rounded-lg border border-[#63A361]/10"
                     >
                       <div
                         className={`w-2 h-2 rounded-full ${
                           index === currentStep
-                            ? 'bg-green-500 animate-pulse'
+                            ? 'bg-[#63A361] animate-pulse'
                             : index < currentStep
-                            ? 'bg-green-600'
+                            ? 'bg-[#63A361]'
                             : 'bg-gray-300'
                         }`}
                       />
                       <span
                         className={`text-sm ${
                           index <= currentStep
-                            ? 'text-gray-900 font-medium'
-                            : 'text-gray-400'
+                            ? 'text-[#5B532C] font-medium'
+                            : 'text-[#5B532C]/40'
                         }`}
                       >
                         {step}

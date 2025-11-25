@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 import {
-  Sprout, MapPin, Calendar, Droplets, 
+  Sprout, MapPin, Calendar, Droplets,
   DollarSign, Package, Recycle, Activity, Target, Clock,
   Zap, Shield,
   ArrowRight, ArrowLeft, BarChart3
 } from 'lucide-react';
-import { getCropGrowthPhases, getVisionAnalysis, type VisionAnalysisResponse } from '../ai/visionService';
+import { getCropGrowthPhases, getConsultAnalysis, type ConsultAnalysisResponse } from '../ai/consultService';
 
 interface FormData {
   cropName: string;
@@ -16,7 +16,7 @@ interface FormData {
   tahsil: string;
 }
 
-const Vision: React.FC = () => {
+const Consult: React.FC = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -26,11 +26,11 @@ const Vision: React.FC = () => {
     tahsil: ''
   });
   const [growthPhases, setGrowthPhases] = useState<string[]>([]);
-  const [analysis, setAnalysis] = useState<VisionAnalysisResponse | null>(null);
+  const [analysis, setAnalysis] = useState<ConsultAnalysisResponse | null>(null);
 
   const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.cropName || formData.cultivatedArea <= 0) {
       toast.error('Enter valid crop details');
       return;
@@ -54,7 +54,7 @@ const Vision: React.FC = () => {
 
   const handleStep2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.currentPhase || !formData.tahsil) {
       toast.error('Complete all fields');
       return;
@@ -62,7 +62,7 @@ const Vision: React.FC = () => {
 
     setLoading(true);
     try {
-      const result = await getVisionAnalysis({
+      const result = await getConsultAnalysis({
         cropName: formData.cropName,
         cultivatedArea: formData.cultivatedArea,
         currentPhase: formData.currentPhase,
@@ -108,7 +108,7 @@ const Vision: React.FC = () => {
   return (
     <div className="min-h-screen bg-white py-8 px-4">
       <Toaster position="top-center" />
-      
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -119,7 +119,7 @@ const Vision: React.FC = () => {
           <div className="flex items-center justify-center gap-3 mb-4">
             <Sprout className="w-12 h-12 text-[#63A361]" />
             <h1 className="text-5xl font-bold text-[#5B532C]">
-              Vision
+              Consult
             </h1>
           </div>
           <p className="text-lg text-[#5B532C]/80">
@@ -160,7 +160,7 @@ const Vision: React.FC = () => {
                   <Sprout className="w-6 h-6 text-[#63A361]" />
                   Tell us about your crop
                 </h2>
-                
+
                 <form onSubmit={handleStep1Submit} className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-[#5B532C] mb-2">
@@ -210,6 +210,103 @@ const Vision: React.FC = () => {
                   </button>
                 </form>
               </div>
+
+              {/* Preview What You'll Get */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-8 space-y-6"
+              >
+                <h3 className="text-center text-lg font-semibold text-[#5B532C]/70">
+                  What You'll Discover
+                </h3>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { icon: BarChart3, title: "Yield Forecast", desc: "Expected production", color: "#63A361" },
+                    { icon: DollarSign, title: "Market Intel", desc: "Prices & buyers", color: "#FFC50F" },
+                    { icon: Calendar, title: "Schedule", desc: "Farming timeline", color: "#63A361" },
+                    { icon: Shield, title: "Risk Analysis", desc: "Weather & pests", color: "#5B532C" }
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.4 + i * 0.1 }}
+                      className="p-4 rounded-xl bg-gradient-to-br from-[#FDE7B3]/20 to-white border border-[#63A361]/10 text-center"
+                    >
+                      <div className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${item.color}15` }}>
+                        <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                      </div>
+                      <h4 className="font-semibold text-[#5B532C] text-sm">{item.title}</h4>
+                      <p className="text-xs text-[#5B532C]/60">{item.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Mock Dashboard Preview */}
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-[#FDE7B3]/20 via-white to-[#63A361]/5 border border-[#63A361]/10">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Mock Yield Card */}
+                    <div className="p-4 rounded-xl bg-white border border-[#63A361]/10">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#63A361]/10 flex items-center justify-center">
+                          <Target className="w-4 h-4 text-[#63A361]" />
+                        </div>
+                        <span className="font-semibold text-[#5B532C] text-sm">Expected Yield</span>
+                      </div>
+                      <div className="h-8 w-24 bg-[#FDE7B3]/40 rounded-lg animate-pulse mb-2" />
+                      <div className="h-3 w-16 bg-[#5B532C]/10 rounded" />
+                    </div>
+
+                    {/* Mock Price Card */}
+                    <div className="p-4 rounded-xl bg-white border border-[#FFC50F]/10">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#FFC50F]/10 flex items-center justify-center">
+                          <DollarSign className="w-4 h-4 text-[#FFC50F]" />
+                        </div>
+                        <span className="font-semibold text-[#5B532C] text-sm">Market Price</span>
+                      </div>
+                      <div className="h-8 w-20 bg-[#FDE7B3]/40 rounded-lg animate-pulse mb-2" />
+                      <div className="h-3 w-14 bg-[#5B532C]/10 rounded" />
+                    </div>
+
+                    {/* Mock Revenue Card */}
+                    <div className="p-4 rounded-xl bg-white border border-[#5B532C]/10">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 rounded-lg bg-[#5B532C]/10 flex items-center justify-center">
+                          <Activity className="w-4 h-4 text-[#5B532C]" />
+                        </div>
+                        <span className="font-semibold text-[#5B532C] text-sm">Total Revenue</span>
+                      </div>
+                      <div className="h-8 w-28 bg-[#FDE7B3]/40 rounded-lg animate-pulse mb-2" />
+                      <div className="h-3 w-20 bg-[#5B532C]/10 rounded" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Features List */}
+                <div className="flex flex-wrap justify-center gap-3">
+                  {[
+                    "Irrigation Schedule",
+                    "Fertilizer Plan",
+                    "Processing Options",
+                    "Buyer Connections",
+                    "Storage Tips"
+                  ].map((feature, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8 + i * 0.1 }}
+                      className="px-4 py-2 bg-white/80 rounded-full border border-[#63A361]/10 text-sm text-[#5B532C]"
+                    >
+                      {feature}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.div>
             </motion.div>
           )}
 
@@ -235,7 +332,7 @@ const Vision: React.FC = () => {
                   <Calendar className="w-6 h-6 text-[#63A361]" />
                   Growth Phase & Location
                 </h2>
-                
+
                 <form onSubmit={handleStep2Submit} className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-[#5B532C] mb-2">
@@ -302,7 +399,7 @@ const Vision: React.FC = () => {
               <div className="flex justify-between items-center bg-white rounded-xl p-4 shadow-md border border-[#5B532C]/10">
                 <div>
                   <h2 className="text-2xl font-bold text-[#5B532C]">
-                    {formData.cropName} - Vision Dashboard
+                    {formData.cropName} - Consult Dashboard
                   </h2>
                   <p className="text-[#5B532C]/70">
                     {formData.cultivatedArea} acres • {formData.tahsil}
@@ -325,7 +422,7 @@ const Vision: React.FC = () => {
                   </h3>
                   <span className="text-3xl font-bold">{analysis.growthInsights.progressPercentage}%</span>
                 </div>
-                
+
                 <div className="w-full bg-[#5B532C]/10 rounded-full h-4 mb-4">
                   <div
                     className="bg-[#63A361] rounded-full h-4 transition-all duration-1000"
@@ -397,7 +494,7 @@ const Vision: React.FC = () => {
                     <p className="text-sm text-[#5B532C]/70 mb-2">Peak Price Period</p>
                     <p className="font-bold text-[#5B532C] text-lg">{analysis.marketIntelligence.peakPricePeriod}</p>
                   </div>
-                  
+
                   {/* Nearby Bazar Samiti */}
                   <div>
                     <p className="text-sm font-semibold text-[#5B532C] mb-3 flex items-center gap-2">
@@ -441,7 +538,7 @@ const Vision: React.FC = () => {
                   <Calendar className="w-6 h-6 text-[#63A361]" />
                   Recommended Schedule
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Fertilizers */}
                   <div>
@@ -499,7 +596,7 @@ const Vision: React.FC = () => {
                   <Recycle className="w-6 h-6 text-[#63A361]" />
                   Value Addition Opportunities
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Processing Options */}
                   <div>
@@ -556,7 +653,7 @@ const Vision: React.FC = () => {
                   <Shield className="w-6 h-6 text-red-600" />
                   Risk Forecast
                 </h3>
-                
+
                 <div className="mb-4 p-4 bg-[#FDE7B3]/50 rounded-lg border border-[#5B532C]/10">
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-[#5B532C]">Overall Risk Level:</span>
@@ -594,7 +691,7 @@ const Vision: React.FC = () => {
                   <Target className="w-7 h-7 text-[#63A361]" />
                   Top 3 Action Items
                 </h3>
-                
+
                 <div className="space-y-3">
                   {analysis.actionableRecommendations.slice(0, 3).map((rec, idx) => (
                     <motion.div
@@ -631,4 +728,4 @@ const Vision: React.FC = () => {
   );
 };
 
-export default Vision;
+export default Consult;

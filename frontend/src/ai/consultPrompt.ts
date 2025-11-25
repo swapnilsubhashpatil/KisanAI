@@ -1,14 +1,14 @@
 /**
- * Vision Prompt Configuration
+ * Consult Prompt Configuration
  * Business-focused crop intelligence system
  */
 
-export interface VisionPhaseInput {
+export interface ConsultPhaseInput {
   cropName: string;
   cultivatedArea: number;
 }
 
-export interface VisionAnalysisInput {
+export interface ConsultAnalysisInput {
   cropName: string;
   cultivatedArea: number;
   currentPhase: string;
@@ -18,7 +18,7 @@ export interface VisionAnalysisInput {
 /**
  * Get prompt for fetching crop growth phases
  */
-export function getGrowthPhasesPrompt(input: VisionPhaseInput): string {
+export function getGrowthPhasesPrompt(input: ConsultPhaseInput): string {
   return `You are an agricultural expert. Provide the growth phases for ${input.cropName}.
 
 IMPORTANT: Return ONLY a valid JSON array with NO additional text, markdown, or explanation.
@@ -35,7 +35,7 @@ Provide realistic growth phases for ${input.cropName} with approximate day range
 /**
  * Get comprehensive business-focused prompt for crop analysis
  */
-export function getVisionAnalysisPrompt(input: VisionAnalysisInput): string {
+export function getConsultAnalysisPrompt(input: ConsultAnalysisInput): string {
   return `You are a concise agricultural business advisor. Analyze the crop scenario and provide focused, actionable insights.
 
 FARMER'S DETAILS:
@@ -170,17 +170,17 @@ export function parseGrowthPhases(response: string): string[] {
     // Remove markdown code blocks if present
     let cleaned = response.trim();
     cleaned = cleaned.replace(/```json\s*/g, '').replace(/```\s*/g, '');
-    
+
     const phases = JSON.parse(cleaned);
-    
+
     if (!Array.isArray(phases)) {
       throw new Error('Response is not an array');
     }
-    
+
     if (phases.length === 0) {
       throw new Error('No phases returned');
     }
-    
+
     return phases;
   } catch (error) {
     console.error('Failed to parse growth phases:', error);
@@ -196,16 +196,16 @@ export function parseGrowthPhases(response: string): string[] {
 }
 
 /**
- * Parse and validate the vision analysis response
+ * Parse and validate the consult analysis response
  */
-export function parseVisionAnalysis(response: string): any {
+export function parseConsultAnalysis(response: string): any {
   try {
     // Remove markdown code blocks if present
     let cleaned = response.trim();
     cleaned = cleaned.replace(/```json\s*/g, '').replace(/```\s*/g, '');
-    
+
     const analysis = JSON.parse(cleaned);
-    
+
     // Validate required fields
     const requiredFields = [
       'growthInsights',
@@ -216,16 +216,16 @@ export function parseVisionAnalysis(response: string): any {
       'riskForecast',
       'actionableRecommendations'
     ];
-    
+
     for (const field of requiredFields) {
       if (!analysis[field]) {
         throw new Error(`Missing required field: ${field}`);
       }
     }
-    
+
     return analysis;
   } catch (error) {
-    console.error('Failed to parse vision analysis:', error);
+    console.error('Failed to parse consult analysis:', error);
     throw new Error('Invalid response format from AI. Please try again.');
   }
 }

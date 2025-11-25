@@ -349,7 +349,7 @@ const DiseaseDetection: React.FC<DiseaseDetectionProps> = ({
     },
   ];
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50/30">
+    <div className="relative min-h-screen bg-white">
       <Toaster position="top-right" />
 
       <div className="px-4 py-8 mx-auto max-w-7xl md:py-12 sm:px-6 lg:px-8">
@@ -362,10 +362,10 @@ const DiseaseDetection: React.FC<DiseaseDetectionProps> = ({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex gap-2 items-center px-4 py-2 mb-4 rounded-full border shadow-lg backdrop-blur-md bg-white/80 border-red-500/20"
+            className="inline-flex gap-2 items-center px-4 py-2 mb-4 rounded-full border shadow-lg backdrop-blur-md bg-white/80 border-[#63A361]/20"
           >
-            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-            <span className="text-sm font-semibold text-red-600">
+            <div className="w-2 h-2 bg-[#63A361] rounded-full animate-pulse" />
+            <span className="text-sm font-semibold text-[#63A361]">
               AI-Powered Monitoring
             </span>
           </motion.div>
@@ -374,7 +374,7 @@ const DiseaseDetection: React.FC<DiseaseDetectionProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600 md:text-4xl"
+            className="text-3xl font-extrabold text-[#5B532C] md:text-4xl"
           >
             Smart Plant Health Analysis
           </motion.h1>
@@ -383,7 +383,7 @@ const DiseaseDetection: React.FC<DiseaseDetectionProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mt-3 text-sm text-gray-600 md:mt-4 md:text-base"
+            className="mt-3 text-sm text-[#5B532C]/70 md:mt-4 md:text-base"
           >
             Advanced AI-powered plant Monitoring with real-time
             monitoring and treatment recommendations
@@ -664,10 +664,10 @@ const DiseaseDetection: React.FC<DiseaseDetectionProps> = ({
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="flex justify-center items-center p-4 bg-green-50 rounded-xl border border-green-100 shadow-sm"
+                className="flex justify-center items-center p-4 bg-[#FDE7B3]/30 rounded-xl border border-[#63A361]/30 shadow-sm"
               >
-                <CheckCircle2 className="mr-2 w-5 h-5 text-green-600" />
-                <span className="font-medium text-green-700">
+                <CheckCircle2 className="mr-2 w-5 h-5 text-[#63A361]" />
+                <span className="font-medium text-[#63A361]">
                   Disease Analysis completed successfully
                 </span>
               </motion.div>
@@ -1095,10 +1095,10 @@ const DiseaseDetection: React.FC<DiseaseDetectionProps> = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2 }}
-                className="flex justify-center items-center p-4 bg-blue-50 rounded-xl border border-blue-100 shadow-sm"
+                className="flex justify-center items-center p-4 bg-[#FDE7B3]/30 rounded-xl border border-[#63A361]/30 shadow-sm"
               >
-                <Calendar className="mr-2 w-5 h-5 text-blue-600" />
-                <span className="font-medium text-blue-700">
+                <Calendar className="mr-2 w-5 h-5 text-[#63A361]" />
+                <span className="font-medium text-[#63A361]">
                   Next Analysis:{" "}
                   {new Date(
                     Date.now() + 7 * 24 * 60 * 60 * 1000,
@@ -1119,7 +1119,7 @@ const DiseaseDetection: React.FC<DiseaseDetectionProps> = ({
                 className="flex justify-center"
               >
                 <motion.button
-                  className="px-8 py-3 text-white font-medium rounded-full flex items-center gap-2 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 transition-all"
+                  className="px-8 py-3 text-white font-medium rounded-full flex items-center gap-2 bg-[#63A361] hover:bg-[#5B532C] transition-all"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={resetAnalysis}

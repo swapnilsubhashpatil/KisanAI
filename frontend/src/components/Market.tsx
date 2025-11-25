@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import {
     Star,
     ShoppingCart,
@@ -114,7 +113,7 @@ const products: Product[] = [
     }
 ]
 
-const ProductCard = ({ product, index }: { product: Product; index: number }) => {
+const ProductCard = ({ product }: { product: Product }) => {
     const handlePayment = async () => {
         try {
             logPaymentFlow('Initializing Payment', {
@@ -148,7 +147,7 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
                     category: product.category
                 },
                 theme: {
-                    color: "#6366F1"
+                    color: "#63A361"
                 }
             };
 
@@ -172,32 +171,16 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
     };
 
     return (
-        <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={{
-                initial: { opacity: 0, y: 20 },
-                animate: {
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                        duration: 0.5,
-                        ease: [0.22, 1, 0.36, 1],
-                        delay: index * 0.1
-                    }
-                }
-            }}
-            whileHover={{ translateY: -4 }}
-            className="flex overflow-hidden relative flex-col p-4 rounded-2xl border shadow-lg backdrop-blur-md transition-all duration-300 sm:p-6 bg-white/90 border-white/30 hover:shadow-xl hover:bg-white"
+        <div
+            className="flex overflow-hidden relative flex-col p-4 rounded-2xl border shadow-lg sm:p-6 bg-white border-[#5B532C]/20"
         >
             <div className="flex relative z-10 flex-col h-full">
                 {/* Category & Rating */}
                 <div className="flex justify-between items-center mb-4 sm:mb-6">
-                    <span className="text-sm font-medium text-gray-500">{product.category}</span>
+                    <span className="text-sm font-medium text-[#5B532C]/80">{product.category}</span>
                     <div className="flex gap-1 items-center">
-                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                        <span className="text-sm font-medium text-gray-700">{product.rating}</span>
+                        <Star className="w-4 h-4 text-[#FFC50F] fill-[#FFC50F]" />
+                        <span className="text-sm font-medium text-[#5B532C]">{product.rating}</span>
                     </div>
                 </div>
 
@@ -215,24 +198,24 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
                     {(product.featured || product.discount) && (
                         <div className="flex gap-2 mb-2">
                             {product.featured && (
-                                <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-primary-50 text-primary-600">
+                                <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-[#63A361]/10 text-[#63A361]">
                                     Featured
                                 </span>
                             )}
                             {product.discount && (
-                                <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-rose-50 text-rose-600">
+                                <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-[#FFC50F]/20 text-[#5B532C]">
                                     {product.discount}% OFF
                                 </span>
                             )}
                         </div>
                     )}
-                    <h3 className="text-lg font-semibold tracking-tight leading-tight text-gray-900 sm:text-xl">
+                    <h3 className="text-lg font-semibold tracking-tight leading-tight text-[#5B532C] sm:text-xl">
                         {product.name}
                     </h3>
                 </div>
 
                 {/* Description */}
-                <p className="mb-4 text-gray-600 sm:mb-8 text-sm/relaxed">
+                <p className="mb-4 text-[#5B532C]/80 sm:mb-8 text-sm/relaxed">
                     {product.description}
                 </p>
 
@@ -242,7 +225,7 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
                         {product.specifications.map((spec, i) => (
                             <span
                                 key={i}
-                                className="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-50 rounded-full"
+                                className="px-3 py-1 text-xs font-medium text-[#5B532C]/80 bg-[#FDE7B3]/10 rounded-full"
                             >
                                 {spec}
                             </span>
@@ -252,32 +235,30 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
 
                 {/* Updated Pricing Display */}
                 <div className="mt-auto space-y-4">
-                    <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-                        <span className="text-sm font-medium text-gray-600">Price</span>
+                    <div className="flex justify-between items-center pt-4 border-t border-[#5B532C]/20">
+                        <span className="text-sm font-medium text-[#5B532C]/80">Price</span>
                         <div className="text-right">
-                            <span className="text-xl font-bold text-gray-900 sm:text-2xl">₹{product.price.toLocaleString()}</span>
+                            <span className="text-xl font-bold text-[#5B532C] sm:text-2xl">₹{product.price.toLocaleString()}</span>
                         </div>
                     </div>
                     {product.rentalPrice > 0 && (
-                        <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-                            <span className="text-sm font-medium text-gray-600">Rental Price</span>
-                            <span className="text-lg font-semibold text-green-600 sm:text-xl">₹{product.rentalPrice} per Hour</span>
+                        <div className="flex justify-between items-center pt-4 border-t border-[#5B532C]/20">
+                            <span className="text-sm font-medium text-[#5B532C]/80">Rental Price</span>
+                            <span className="text-lg font-semibold text-[#63A361] sm:text-xl">₹{product.rentalPrice} per Hour</span>
                         </div>
                     )}
 
                     {/* Updated Action Button */}
-                    <motion.button
+                    <button
                         onClick={handlePayment}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="flex gap-2 justify-center items-center px-4 py-3 w-full font-medium text-white rounded-xl transition-colors duration-200 sm:px-6 bg-primary-600 hover:bg-primary-700"
+                        className="flex gap-2 justify-center items-center px-4 py-3 w-full font-medium text-white rounded-xl sm:px-6 bg-[#63A361] hover:bg-[#5B532C] transition-all duration-300"
                     >
                         <ShoppingCart className="w-5 h-5" />
                         Buy Now
-                    </motion.button>
+                    </button>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
@@ -289,24 +270,22 @@ const Market = () => {
 
         <div className="px-4 py-8 mx-auto max-w-6xl sm:px-6 lg:px-8 sm:py-12">
             {/* Header */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+            <div
                 className="mb-8 text-center"
             >
-                <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
+                <h2 className="mb-4 text-3xl font-bold tracking-tight text-[#5B532C] md:text-4xl">
                     Smart Farming Marketplace
                 </h2>
-                <p className="mx-auto max-w-2xl text-base leading-relaxed text-gray-600">
+                <p className="mx-auto max-w-2xl text-base leading-relaxed text-[#5B532C]/80">
                     Purchase or rent premium farming equipment and supplies
                 </p>
-            </motion.div>
+            </div>
 
 
             {/* Responsive Products Grid */}
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8">
-                {filteredProducts.map((product, index) => (
-                    <ProductCard key={product.id} product={product} index={index} />
+                {filteredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
                 ))}
             </div>
         </div>

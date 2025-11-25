@@ -25,26 +25,26 @@ interface Props {
 export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetry }) => {
   const getStatusColor = (status: string) => {
     const colors = {
-      low: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', icon: 'text-green-600' },
-      medium: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', icon: 'text-yellow-600' },
+      low: { bg: 'bg-[#FDE7B3]/20', text: 'text-[#63A361]', border: 'border-[#63A361]/20', icon: 'text-[#63A361]' },
+      medium: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
       high: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: 'text-red-600' },
-      none: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', icon: 'text-green-600' },
-      suspected: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', icon: 'text-yellow-600' },
+      none: { bg: 'bg-[#FDE7B3]/20', text: 'text-[#63A361]', border: 'border-[#63A361]/20', icon: 'text-[#63A361]' },
+      suspected: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
       evident: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: 'text-red-600' },
     };
     return colors[status as keyof typeof colors] || colors.low;
   };
 
-  // Prepare chart data - Professional Color Scheme
+  // Prepare chart data - Professional Color Scheme (Green dominant)
   const temperatureData = [
-    { name: 'Min Temp', value: result.realTimeMetrics.minTemperature, fill: '#3b82f6' },
-    { name: 'Avg Temp', value: result.realTimeMetrics.averageTemperature, fill: '#10b981' },
-    { name: 'Max Temp', value: result.realTimeMetrics.maxTemperature, fill: '#a855f7' },
+    { name: 'Min Temp', value: result.realTimeMetrics.minTemperature, fill: '#63A361' },
+    { name: 'Avg Temp', value: result.realTimeMetrics.averageTemperature, fill: '#63A361' },
+    { name: 'Max Temp', value: result.realTimeMetrics.maxTemperature, fill: '#FFC50F' },
   ];
 
   const spotsData = [
-    { name: 'Hot Spots', value: result.hotSpots, fill: '#a855f7' },
-    { name: 'Cold Spots', value: result.coldSpots, fill: '#3b82f6' },
+    { name: 'Hot Spots', value: result.hotSpots, fill: '#FFC50F' },
+    { name: 'Cold Spots', value: result.coldSpots, fill: '#63A361' },
   ];
   
   // Environmental factors data
@@ -52,7 +52,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
     name: factor.factor,
     status: factor.status,
     value: factor.status === 'optimal' ? 100 : factor.status === 'warning' ? 60 : 30,
-    fill: factor.status === 'optimal' ? '#10b981' : factor.status === 'warning' ? '#3b82f6' : '#a855f7'
+    fill: factor.status === 'optimal' ? '#63A361' : factor.status === 'warning' ? '#FFC50F' : '#f59e0b'
   }));
 
   const radarData = [
@@ -73,10 +73,10 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex justify-center items-center p-4 bg-green-50 rounded-xl border border-green-100 shadow-sm"
+        className="flex justify-center items-center p-4 bg-[#FDE7B3]/30 rounded-xl border border-[#63A361]/30"
       >
-        <CheckCircle2 className="mr-2 w-5 h-5 text-green-600" />
-        <span className="font-medium text-green-700">Thermal analysis completed successfully</span>
+        <CheckCircle2 className="mr-2 w-5 h-5 text-[#63A361]" />
+        <span className="font-medium text-[#63A361]">Thermal analysis completed successfully</span>
       </motion.div>
 
       {/* Image Preview */}
@@ -105,11 +105,11 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-6 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-red-100 rounded-xl">
-              <Thermometer className="w-6 h-6 text-red-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Thermometer className="w-6 h-6 text-[#5B532C]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Temperature</h3>
           </div>
@@ -124,7 +124,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={`p-6 bg-gradient-to-br ${getStatusColor(result.waterStressZones).bg} rounded-2xl border ${getStatusColor(result.waterStressZones).border} shadow-xl`}
+          className={`p-6 bg-white rounded-2xl border ${getStatusColor(result.waterStressZones).border}`}
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 ${getStatusColor(result.waterStressZones).bg} rounded-xl border ${getStatusColor(result.waterStressZones).border}`}>
@@ -145,7 +145,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={`p-6 bg-gradient-to-br ${getStatusColor(result.irrigationLeaks).bg} rounded-2xl border ${getStatusColor(result.irrigationLeaks).border} shadow-xl`}
+          className={`p-6 bg-white rounded-2xl border ${getStatusColor(result.irrigationLeaks).border}`}
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 ${getStatusColor(result.irrigationLeaks).bg} rounded-xl border ${getStatusColor(result.irrigationLeaks).border}`}>
@@ -166,16 +166,16 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <Target className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-[#63A361]/10 rounded-xl">
+              <Target className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Confidence</h3>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-blue-600 mb-2">{result.confidenceLevel}%</div>
+            <div className="text-4xl font-bold text-[#63A361] mb-2">{result.confidenceLevel}%</div>
             <div className="text-sm text-gray-600">AI Accuracy</div>
           </div>
         </motion.div>
@@ -233,12 +233,12 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
             </ResponsiveContainer>
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4">
-            <div className="text-center p-3 bg-white/80 rounded-lg border border-blue-200/50 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-blue-600">{result.realTimeMetrics.minTemperature}°C</div>
+            <div className="text-center p-3 bg-white/80 rounded-lg border border-[#63A361]/20 backdrop-blur-sm">
+              <div className="text-2xl font-bold text-[#63A361]">{result.realTimeMetrics.minTemperature}°C</div>
               <div className="text-xs text-gray-600 mt-1">Minimum</div>
             </div>
             <div className="text-center p-3 bg-white/80 rounded-lg border border-green-200/50 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-green-600">{result.realTimeMetrics.averageTemperature}°C</div>
+              <div className="text-2xl font-bold text-[#63A361]">{result.realTimeMetrics.averageTemperature}°C</div>
               <div className="text-xs text-gray-600 mt-1">Average</div>
             </div>
             <div className="text-center p-3 bg-white/80 rounded-lg border border-purple-200/50 backdrop-blur-sm">
@@ -253,7 +253,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-orange-100 rounded-lg">
@@ -302,8 +302,8 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
               <div className="text-3xl font-bold text-purple-600">{result.hotSpots}</div>
               <div className="text-xs text-gray-600 mt-1">Hot Spots</div>
             </div>
-            <div className="text-center p-3 bg-white/80 rounded-lg border border-blue-200/50 backdrop-blur-sm">
-              <div className="text-3xl font-bold text-blue-600">{result.coldSpots}</div>
+            <div className="text-center p-3 bg-white/80 rounded-lg border border-[#63A361]/20 backdrop-blur-sm">
+              <div className="text-3xl font-bold text-[#63A361]">{result.coldSpots}</div>
               <div className="text-xs text-gray-600 mt-1">Cold Spots</div>
             </div>
           </div>
@@ -317,7 +317,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-purple-100 rounded-lg">
@@ -328,7 +328,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           <div className="text-center mb-6">
             <div className="text-6xl font-bold text-purple-600 mb-4">{result.realTimeMetrics.stressIndex}</div>
             <div className="text-sm text-gray-600 mb-6">Stress Level (0-100)</div>
-            <div className="relative h-4 bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 rounded-full">
+            <div className="relative h-4 bg-gradient-to-r from-[#63A361] via-[#FFC50F] to-red-500 rounded-full">
               <motion.div
                 initial={{ left: '0%' }}
                 animate={{ left: `${result.realTimeMetrics.stressIndex}%` }}
@@ -349,11 +349,11 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Activity className="w-5 h-5 text-blue-600" />
+            <div className="p-2 bg-[#63A361]/10 rounded-lg">
+              <Activity className="w-5 h-5 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Performance Overview</h3>
           </div>
@@ -375,8 +375,8 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
                 <Radar 
                   name="Metrics" 
                   dataKey="value" 
-                  stroke="#3b82f6" 
-                  fill="#3b82f6" 
+                  stroke="#63A361" 
+                  fill="#63A361" 
                   fillOpacity={0.6}
                   strokeWidth={2}
                 />
@@ -401,7 +401,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
-        className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+        className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
       >
         <div className="flex items-center gap-3 mb-4">
           <div className="p-3 bg-purple-100 rounded-xl">
@@ -454,7 +454,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
                 <span
                   className={`px-2 py-1 text-xs font-medium rounded-full ${
                     factor.status === 'optimal'
-                      ? 'bg-green-100 text-green-700'
+                      ? 'bg-[#FDE7B3]/30 text-[#63A361]'
                       : factor.status === 'warning'
                       ? 'bg-yellow-100 text-yellow-700'
                       : 'bg-red-100 text-red-700'
@@ -475,11 +475,11 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.1 }}
-          className="p-6 bg-white/90 rounded-2xl border shadow-xl backdrop-blur-md border-white/30"
+          className="p-6 bg-white rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-green-100 rounded-xl">
-              <Shield className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Shield className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Mitigation Strategies</h3>
           </div>
@@ -528,7 +528,7 @@ export const ThermalMonitoringResult: React.FC<Props> = ({ result, image, onRetr
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={onRetry}
-          className="px-8 py-3 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-medium rounded-full flex items-center gap-2 shadow-lg"
+          className="px-8 py-3 bg-[#63A361] hover:bg-[#5B532C] text-white font-medium rounded-full flex items-center gap-2"
         >
           <Sparkles className="w-5 h-5" />
           Analyze Another Thermal Image

@@ -1,17 +1,17 @@
 /**
- * Vision Service - Business-focused crop intelligence
+ * Consult Service - Business-focused crop intelligence
  * Uses Kimi K2 via Groq API for comprehensive agricultural business insights
  */
 
 import Groq from "groq-sdk";
 import {
   getGrowthPhasesPrompt,
-  getVisionAnalysisPrompt,
+  getConsultAnalysisPrompt,
   parseGrowthPhases,
-  parseVisionAnalysis,
-  type VisionPhaseInput,
-  type VisionAnalysisInput
-} from "./visionPrompt";
+  parseConsultAnalysis,
+  type ConsultPhaseInput,
+  type ConsultAnalysisInput
+} from "./consultPrompt";
 
 // Initialize Groq API for Kimi K2
 const groq = new Groq({
@@ -20,7 +20,7 @@ const groq = new Groq({
 });
 
 // Type definitions
-export interface VisionAnalysisResponse {
+export interface ConsultAnalysisResponse {
   growthInsights: {
     totalGrowthDuration: string;
     currentDayOfGrowth: number;
@@ -122,7 +122,7 @@ export interface VisionAnalysisResponse {
 /**
  * Get crop growth phases using Kimi K2
  */
-export async function getCropGrowthPhases(input: VisionPhaseInput): Promise<string[]> {
+export async function getCropGrowthPhases(input: ConsultPhaseInput): Promise<string[]> {
   try {
     const prompt = getGrowthPhasesPrompt(input);
 
@@ -152,11 +152,11 @@ export async function getCropGrowthPhases(input: VisionPhaseInput): Promise<stri
 }
 
 /**
- * Get comprehensive vision analysis using Kimi K2
+ * Get comprehensive consult analysis using Kimi K2
  */
-export async function getVisionAnalysis(input: VisionAnalysisInput): Promise<VisionAnalysisResponse> {
+export async function getConsultAnalysis(input: ConsultAnalysisInput): Promise<ConsultAnalysisResponse> {
   try {
-    const prompt = getVisionAnalysisPrompt(input);
+    const prompt = getConsultAnalysisPrompt(input);
 
     const completion = await groq.chat.completions.create({
       messages: [
@@ -176,9 +176,9 @@ export async function getVisionAnalysis(input: VisionAnalysisInput): Promise<Vis
       throw new Error('No response from AI');
     }
 
-    return parseVisionAnalysis(response);
+    return parseConsultAnalysis(response);
   } catch (error) {
-    console.error('Error getting vision analysis:', error);
-    throw new Error('Failed to get vision analysis. Please try again.');
+    console.error('Error getting consult analysis:', error);
+    throw new Error('Failed to get consult analysis. Please try again.');
   }
 }

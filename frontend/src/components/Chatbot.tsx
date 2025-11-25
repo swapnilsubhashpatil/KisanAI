@@ -232,9 +232,9 @@ const MessageComponent: React.FC<{ message: Message }> = ({ message }) => (
     transition={{ duration: 0.4, ease: "easeOut" }}
     className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
   >
-    <div className={`max-w-[90%] sm:max-w-[80%] p-4 rounded-xl backdrop-blur-sm shadow-lg 
+    <div className={`max-w-[90%] sm:max-w-[80%] p-4 rounded-xl backdrop-blur-sm shadow-lg
       ${message.sender === "user"
-        ? "bg-gradient-to-br from-green-600 to-green-800 text-white shadow-green-500/20"
+        ? "bg-[#63A361] text-white"
         : "bg-white/90 text-gray-800 border border-gray-200/20"
       }`}>
       {message.sender === "ai" ? (
@@ -283,7 +283,7 @@ const QuickActions: React.FC<{ onSelect: (action: string) => void }> = ({ onSele
           onClick={() => onSelect(action)}
           className="flex overflow-hidden relative items-center p-4 rounded-xl border transition-all duration-300 group bg-white/90 border-primary-200/30 hover:border-primary-300/50"
         >
-          <span className="mr-3 text-green-600">{icon}</span>
+          <span className="mr-3 text-[#63A361]">{icon}</span>
           <span className="text-sm font-medium">{label}</span>
         </button>
       ))}
@@ -688,9 +688,9 @@ const AgriTechChatbot: React.FC<AgriTechChatbotProps> = ({
             height: isExpanded ? "min(90vh, 800px)" : "min(90vh, 600px)"
           }}
         >
-          <div className="flex justify-between items-center p-6 text-white bg-gradient-to-r from-green-600 to-green-800 rounded-t-2xl">
+          <div className="flex justify-between items-center p-6 text-white bg-[#63A361] rounded-t-2xl">
             <div className="flex items-center space-x-4">
-              <div className="flex justify-center items-center w-12 h-12 text-green-700 rounded-xl shadow-inner backdrop-blur-sm bg-white/90">
+              <div className="flex justify-center items-center w-12 h-12 text-[#63A361] rounded-xl shadow-inner backdrop-blur-sm bg-white/90">
                 <Bot className="w-6 h-6" />
               </div>
               <div>
@@ -739,7 +739,7 @@ const AgriTechChatbot: React.FC<AgriTechChatbotProps> = ({
           </div>
 
           <div className="overflow-hidden relative flex-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-green-50/10" />
+            <div className="absolute inset-0 bg-[#FDE7B3]/5" />
             <div ref={chatContainerRef} className="overflow-y-auto relative p-6 space-y-6 h-full scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               {error && (
                 <div className="p-4 text-sm text-red-600 rounded-xl shadow-lg bg-red-50/90">
@@ -776,7 +776,7 @@ const AgriTechChatbot: React.FC<AgriTechChatbotProps> = ({
             </div>
           </div>
 
-          <div className="relative p-6 bg-gradient-to-t from-white via-white to-transparent">
+          <div className="relative p-6 bg-white">
             {showCharacterCount && (
               <div className={`mb-2 text-xs ${getInputColor()}`}>
                 {characterLimit - input.length} {t.remainingChars}
@@ -853,7 +853,7 @@ const AgriTechChatbot: React.FC<AgriTechChatbotProps> = ({
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="p-4 text-white bg-gradient-to-r from-green-600 to-green-800 rounded-xl shadow-lg transition-all duration-300 hover:from-green-700 hover:to-green-600 shadow-green-500/20 hover:shadow-xl hover:shadow-green-500/30"
+          className="p-4 text-white bg-[#63A361] rounded-xl shadow-lg transition-all duration-300 hover:bg-[#5B532C]"
         >
           <FaRocketchat className="w-6 h-6" />
         </button>

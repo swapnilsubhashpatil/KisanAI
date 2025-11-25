@@ -25,24 +25,24 @@ interface Props {
 export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }) => {
   const getStatusColor = (status: string) => {
     const colors = {
-      optimal: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', icon: 'text-green-600' },
-      good: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', icon: 'text-blue-600' },
-      fair: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', icon: 'text-yellow-600' },
-      poor: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200', icon: 'text-orange-600' },
+      optimal: { bg: 'bg-[#FDE7B3]/20', text: 'text-[#63A361]', border: 'border-[#63A361]/20', icon: 'text-[#63A361]' },
+      good: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#5B532C]', border: 'border-[#5B532C]/30', icon: 'text-[#5B532C]' },
+      fair: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
+      poor: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
       critical: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: 'text-red-600' },
-      low: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', icon: 'text-yellow-600' },
-      medium: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200', icon: 'text-orange-600' },
+      low: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
+      medium: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
       high: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: 'text-red-600' },
-      none: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', icon: 'text-green-600' },
+      none: { bg: 'bg-[#FDE7B3]/20', text: 'text-[#63A361]', border: 'border-[#63A361]/20', icon: 'text-[#63A361]' },
     };
     return colors[status as keyof typeof colors] || colors.fair;
   };
 
-  // Prepare chart data - Professional Color Scheme (Blue, Green, Purple)
+  // Prepare chart data - Professional Color Scheme (Green dominant)
   const moistureData = [
-    { name: 'Moisture', value: result.realTimeMetrics.moisturePercentage, fill: '#3b82f6' }, // Blue-500
-    { name: 'Organic', value: result.realTimeMetrics.organicMatterIndicator, fill: '#10b981' }, // Green-500
-    { name: 'pH Balance', value: (result.realTimeMetrics.pHEstimate / 14) * 100, fill: '#a855f7' }, // Purple-500
+    { name: 'Moisture', value: result.realTimeMetrics.moisturePercentage, fill: '#63A361' },
+    { name: 'Organic', value: result.realTimeMetrics.organicMatterIndicator, fill: '#63A361' },
+    { name: 'pH Balance', value: (result.realTimeMetrics.pHEstimate / 14) * 100, fill: '#FFC50F' },
   ];
 
   // Environmental factors data
@@ -50,7 +50,7 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
     name: factor.factor,
     status: factor.status,
     value: factor.status === 'optimal' ? 100 : factor.status === 'warning' ? 60 : 30,
-    fill: factor.status === 'optimal' ? '#10b981' : factor.status === 'warning' ? '#3b82f6' : '#f59e0b'
+    fill: factor.status === 'optimal' ? '#63A361' : factor.status === 'warning' ? '#FFC50F' : '#f59e0b'
   }));
 
   return (
@@ -63,10 +63,10 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex justify-center items-center p-4 bg-green-50 rounded-xl border border-green-100 shadow-sm"
+        className="flex justify-center items-center p-4 bg-[#FDE7B3]/30 rounded-xl border border-[#63A361]/30"
       >
-        <CheckCircle2 className="mr-2 w-5 h-5 text-green-600" />
-        <span className="font-medium text-green-700">Soil analysis completed successfully</span>
+        <CheckCircle2 className="mr-2 w-5 h-5 text-[#63A361]" />
+        <span className="font-medium text-[#63A361]">Soil analysis completed successfully</span>
       </motion.div>
 
       {/* Image Preview */}
@@ -95,16 +95,16 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-amber-100 rounded-xl">
-              <Layers className="w-6 h-6 text-amber-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Layers className="w-6 h-6 text-[#5B532C]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Soil Type</h3>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-amber-600 mb-2">{result.soilType}</div>
+            <div className="text-2xl font-bold text-[#5B532C] mb-2">{result.soilType}</div>
             <div className="text-sm text-gray-600">{result.texture} texture</div>
             <div className="text-xs text-gray-500 mt-1">{result.colorDescription}</div>
           </div>
@@ -115,7 +115,7 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={`p-6 bg-gradient-to-br ${getStatusColor(result.moistureLevel).bg} rounded-2xl border ${getStatusColor(result.moistureLevel).border} shadow-xl`}
+          className={`p-6 bg-white rounded-2xl border ${getStatusColor(result.moistureLevel).border}`}
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 ${getStatusColor(result.moistureLevel).bg} rounded-xl border ${getStatusColor(result.moistureLevel).border}`}>
@@ -136,7 +136,7 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={`p-6 bg-gradient-to-br ${getStatusColor(result.fertilityEstimate).bg} rounded-2xl border ${getStatusColor(result.fertilityEstimate).border} shadow-xl`}
+          className={`p-6 bg-white rounded-2xl border ${getStatusColor(result.fertilityEstimate).border}`}
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 ${getStatusColor(result.fertilityEstimate).bg} rounded-xl border ${getStatusColor(result.fertilityEstimate).border}`}>
@@ -157,16 +157,16 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <Target className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Target className="w-6 h-6 text-[#5B532C]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Confidence</h3>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-blue-600 mb-2">{result.confidenceLevel}%</div>
+            <div className="text-4xl font-bold text-[#63A361] mb-2">{result.confidenceLevel}%</div>
             <div className="text-sm text-gray-600">AI Accuracy</div>
           </div>
         </motion.div>
@@ -179,11 +179,11 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Gauge className="w-5 h-5 text-purple-600" />
+            <div className="p-2 bg-[#FDE7B3]/30 rounded-lg">
+              <Gauge className="w-5 h-5 text-[#5B532C]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">pH Level</h3>
           </div>
@@ -191,7 +191,7 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
             <div className="text-5xl font-bold text-purple-600 mb-2">{result.realTimeMetrics.pHEstimate}</div>
             <div className="text-sm text-gray-600">Soil pH Level</div>
           </div>
-          <div className="relative h-4 bg-gradient-to-r from-red-500 via-green-500 to-blue-500 rounded-full">
+          <div className="relative h-4 bg-gradient-to-r from-red-500 via-[#63A361] to-[#63A361] rounded-full">
             <motion.div
               initial={{ left: '0%' }}
               animate={{ left: `${((result.realTimeMetrics.pHEstimate - 3) / 11) * 100}%` }}
@@ -211,7 +211,7 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className={`p-6 bg-gradient-to-br ${getStatusColor(result.erosionRisk).bg} rounded-2xl border ${getStatusColor(result.erosionRisk).border} shadow-xl`}
+          className={`p-6 bg-white rounded-2xl border ${getStatusColor(result.erosionRisk).border}`}
         >
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-orange-100 rounded-lg">
@@ -235,11 +235,11 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-amber-100 rounded-lg">
-              <Droplets className="w-5 h-5 text-amber-600" />
+            <div className="p-2 bg-[#FDE7B3]/30 rounded-lg">
+              <Droplets className="w-5 h-5 text-[#5B532C]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Soil Metrics</h3>
           </div>
@@ -286,11 +286,11 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="p-6 bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <Activity className="w-5 h-5 text-orange-600" />
+            <div className="p-2 bg-[#FDE7B3]/30 rounded-lg">
+              <Activity className="w-5 h-5 text-[#5B532C]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Environmental Factors</h3>
           </div>
@@ -339,23 +339,23 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
-        className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+        className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
       >
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 bg-amber-100 rounded-xl">
-            <Activity className="w-6 h-6 text-amber-600" />
+          <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+            <Activity className="w-6 h-6 text-[#5B532C]" />
           </div>
           <h3 className="text-lg font-bold text-gray-900">Composition Analysis</h3>
         </div>
         <div className="text-center">
           <p className="text-base text-gray-700 mb-4">{result.compositionNotes}</p>
           <div className="grid grid-cols-3 gap-4 mt-4">
-            <div className="text-center p-3 bg-white/80 rounded-lg border border-blue-200/50 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-blue-600">{result.realTimeMetrics.moisturePercentage}%</div>
+            <div className="text-center p-3 bg-white/80 rounded-lg border border-[#63A361]/20 backdrop-blur-sm">
+              <div className="text-2xl font-bold text-[#63A361]">{result.realTimeMetrics.moisturePercentage}%</div>
               <div className="text-xs text-gray-600 mt-1">Moisture</div>
             </div>
-            <div className="text-center p-3 bg-white/80 rounded-lg border border-green-200/50 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-green-600">{result.realTimeMetrics.organicMatterIndicator}</div>
+            <div className="text-center p-3 bg-white rounded-lg border border-[#63A361]/30">
+              <div className="text-2xl font-bold text-[#63A361]">{result.realTimeMetrics.organicMatterIndicator}</div>
               <div className="text-xs text-gray-600 mt-1">Organic Matter</div>
             </div>
             <div className="text-center p-3 bg-white/80 rounded-lg border border-purple-200/50 backdrop-blur-sm">
@@ -371,7 +371,7 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
-        className={`p-6 bg-gradient-to-br ${getStatusColor(result.salinityIssue).bg} rounded-2xl border ${getStatusColor(result.salinityIssue).border} shadow-xl`}
+        className={`p-6 bg-white rounded-2xl border ${getStatusColor(result.salinityIssue).border}`}
       >
         <div className="flex items-center gap-3 mb-4">
           <div className={`p-3 ${getStatusColor(result.salinityIssue).bg} rounded-xl border ${getStatusColor(result.salinityIssue).border}`}>
@@ -397,15 +397,15 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           className="p-6 bg-white/90 rounded-2xl border shadow-xl backdrop-blur-md border-white/30"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <TrendingUp className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-[#63A361]/10 rounded-xl">
+              <TrendingUp className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Improvement Suggestions</h3>
           </div>
           <ul className="space-y-3">
             {result.improvementSuggestions.map((rec: string, index: number) => (
               <li key={index} className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 shrink-0"></div>
+                <div className="w-2 h-2 bg-[#63A361] rounded-full mt-2 shrink-0"></div>
                 <span className="text-sm text-gray-700">{rec}</span>
               </li>
             ))}
@@ -447,7 +447,7 @@ export const SoilMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={onRetry}
-          className="px-8 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-medium rounded-full flex items-center gap-2 shadow-lg"
+          className="px-8 py-3 bg-[#63A361] hover:bg-[#5B532C] text-white font-medium rounded-full flex items-center gap-2"
         >
           <Sparkles className="w-5 h-5" />
           Analyze Another Sample

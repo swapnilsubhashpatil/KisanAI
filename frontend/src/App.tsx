@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { Navbar } from "./components/Navbar"
 import { Home } from "./pages/Home"
-import Vision from "./pages/Vision"
+import Consult from "./pages/Consult"
 import Monitoring from "./pages/Monitoring"
 import { MarketInsights } from "./pages/MarketInsights"
 import Water from "./pages/SmartFarming"
@@ -20,7 +20,7 @@ function App() {
               path="/monitor"
               element={<Monitoring />}
             />
-            <Route path="/consult" element={<Vision />} />
+            <Route path="/consult" element={<Consult />} />
             <Route path="/market" element={<MarketInsights />} />
             <Route path="/farming" element={<Water />} />
           </Routes>

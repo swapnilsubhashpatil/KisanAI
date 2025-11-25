@@ -23,10 +23,10 @@ export const Navbar: React.FC = () => {
               to="/"
               className="flex items-center space-x-3 group"
             >
-              <div className="p-2 rounded-lg transition-colors bg-primary-50 group-hover:bg-primary-100">
-                <Sprout className="w-8 h-8 text-primary-600" />
+              <div className="p-2 rounded-lg transition-colors bg-[#FDE7B3]/30 group-hover:bg-[#FDE7B3]/50">
+                <Sprout className="w-8 h-8 text-[#63A361]" />
               </div>
-              <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-500">
+              <span className="text-2xl font-bold text-[#5B532C]">
                 Kisan AI
               </span>
             </NavLink>
@@ -41,10 +41,10 @@ export const Navbar: React.FC = () => {
                 className={({ isActive }) =>
                   cn(
                     'inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
-                    'hover:text-primary-600 hover:bg-primary-50 hover:scale-105',
+                    'hover:text-[#63A361] hover:bg-[#FDE7B3]/20',
                     isActive
-                      ? 'text-primary-600 bg-primary-50 shadow-sm'
-                      : 'text-gray-600'
+                      ? 'text-[#63A361] bg-[#FDE7B3]/20'
+                      : 'text-[#5B532C]/80'
                   )
                 }
               >
@@ -57,7 +57,7 @@ export const Navbar: React.FC = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex justify-center items-center p-2 text-gray-600 rounded-lg transition-colors hover:text-primary-600 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="inline-flex justify-center items-center p-2 text-[#5B532C] rounded-lg transition-colors hover:text-[#63A361] hover:bg-[#FDE7B3]/20 focus:outline-none focus:ring-2 focus:ring-[#63A361]"
             >
               {isOpen ? (
                 <X className="w-6 h-6" />
@@ -88,10 +88,10 @@ export const Navbar: React.FC = () => {
                   className={({ isActive }) =>
                     cn(
                       'block px-4 py-3 rounded-lg text-base font-medium transition-all duration-200',
-                      'hover:text-primary-600 hover:bg-primary-50',
+                      'hover:text-[#63A361] hover:bg-[#FDE7B3]/20',
                       isActive
-                        ? 'text-primary-600 bg-primary-50 shadow-sm'
-                        : 'text-gray-600'
+                        ? 'text-[#63A361] bg-[#FDE7B3]/20'
+                        : 'text-[#5B532C]/80'
                     )
                   }
                 >

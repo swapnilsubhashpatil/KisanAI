@@ -25,28 +25,28 @@ interface Props {
 export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry }) => {
   const getStatusColor = (status: string) => {
     const colors = {
-      low: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', icon: 'text-green-600' },
-      medium: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', icon: 'text-yellow-600' },
+      low: { bg: 'bg-[#FDE7B3]/20', text: 'text-[#63A361]', border: 'border-[#63A361]/20', icon: 'text-[#63A361]' },
+      medium: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
       high: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: 'text-red-600' },
-      uniform: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', icon: 'text-green-600' },
-      patchy: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', icon: 'text-yellow-600' },
+      uniform: { bg: 'bg-[#FDE7B3]/20', text: 'text-[#63A361]', border: 'border-[#63A361]/20', icon: 'text-[#63A361]' },
+      patchy: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
       irregular: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: 'text-red-600' },
     };
     return colors[status as keyof typeof colors] || colors.low;
   };
 
-  // Prepare chart data - Professional Color Scheme
+  // Prepare chart data - Professional Color Scheme (Green dominant)
   const coverageData = [
-    { name: 'Crop Coverage', value: result.realTimeMetrics.coveragePercentage, fill: '#3b82f6' }, // Blue-500
-    { name: 'Weed Coverage', value: result.realTimeMetrics.weedCoverage, fill: '#10b981' }, // Green-500
-    { name: 'Bare Soil', value: result.realTimeMetrics.bareSoil, fill: '#a855f7' }, // Purple-500
+    { name: 'Crop Coverage', value: result.realTimeMetrics.coveragePercentage, fill: '#63A361' },
+    { name: 'Weed Coverage', value: result.realTimeMetrics.weedCoverage, fill: '#FFC50F' },
+    { name: 'Bare Soil', value: result.realTimeMetrics.bareSoil, fill: '#5B532C' },
   ];
   
   // Field performance data for second chart
   const performanceData = [
-    { name: 'Vegetation', value: result.vegetationIndex, fill: '#3b82f6' },
-    { name: 'Weed Control', value: 100 - result.realTimeMetrics.weedCoverage, fill: '#10b981' },
-    { name: 'Uniformity', value: result.fieldUniformity === 'uniform' ? 100 : result.fieldUniformity === 'patchy' ? 60 : 30, fill: '#a855f7' },
+    { name: 'Vegetation', value: result.vegetationIndex, fill: '#63A361' },
+    { name: 'Weed Control', value: 100 - result.realTimeMetrics.weedCoverage, fill: '#63A361' },
+    { name: 'Uniformity', value: result.fieldUniformity === 'uniform' ? 100 : result.fieldUniformity === 'patchy' ? 60 : 30, fill: '#FFC50F' },
   ];
 
   const radarData = [
@@ -67,10 +67,10 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex justify-center items-center p-4 bg-green-50 rounded-xl border border-green-100 shadow-sm"
+        className="flex justify-center items-center p-4 bg-[#FDE7B3]/30 rounded-xl border border-[#63A361]/30"
       >
-        <CheckCircle2 className="mr-2 w-5 h-5 text-green-600" />
-        <span className="font-medium text-green-700">Field analysis completed successfully</span>
+        <CheckCircle2 className="mr-2 w-5 h-5 text-[#63A361]" />
+        <span className="font-medium text-[#63A361]">Field analysis completed successfully</span>
       </motion.div>
 
       {/* Image Preview */}
@@ -99,16 +99,16 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-green-100 rounded-xl">
-              <Sprout className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Sprout className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Growth Stage</h3>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600 mb-2">{result.cropGrowthStage}</div>
+            <div className="text-2xl font-bold text-[#63A361] mb-2">{result.cropGrowthStage}</div>
             <div className="text-sm text-gray-600">Current Phase</div>
           </div>
         </motion.div>
@@ -118,7 +118,7 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={`p-6 bg-gradient-to-br ${getStatusColor(result.weedDensity).bg} rounded-2xl border ${getStatusColor(result.weedDensity).border} shadow-xl`}
+          className={`p-6 bg-white rounded-2xl border ${getStatusColor(result.weedDensity).border}`}
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 ${getStatusColor(result.weedDensity).bg} rounded-xl border ${getStatusColor(result.weedDensity).border}`}>
@@ -139,7 +139,7 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={`p-6 bg-gradient-to-br ${getStatusColor(result.fieldUniformity).bg} rounded-2xl border ${getStatusColor(result.fieldUniformity).border} shadow-xl`}
+          className={`p-6 bg-white rounded-2xl border ${getStatusColor(result.fieldUniformity).border}`}
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 ${getStatusColor(result.fieldUniformity).bg} rounded-xl border ${getStatusColor(result.fieldUniformity).border}`}>
@@ -160,16 +160,16 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <Target className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-[#63A361]/10 rounded-xl">
+              <Target className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Confidence</h3>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-blue-600 mb-2">{result.confidenceLevel}%</div>
+            <div className="text-4xl font-bold text-[#63A361] mb-2">{result.confidenceLevel}%</div>
             <div className="text-sm text-gray-600">AI Accuracy</div>
           </div>
         </motion.div>
@@ -182,11 +182,11 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Map className="w-5 h-5 text-green-600" />
+            <div className="p-2 bg-[#FDE7B3]/30 rounded-lg">
+              <Map className="w-5 h-5 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Field Coverage Analysis</h3>
           </div>
@@ -227,12 +227,12 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
             </ResponsiveContainer>
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4">
-            <div className="text-center p-3 bg-white/80 rounded-lg border border-blue-200/50 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-blue-600">{result.realTimeMetrics.coveragePercentage}%</div>
+            <div className="text-center p-3 bg-white/80 rounded-lg border border-[#63A361]/20 backdrop-blur-sm">
+              <div className="text-2xl font-bold text-[#63A361]">{result.realTimeMetrics.coveragePercentage}%</div>
               <div className="text-xs text-gray-600 mt-1">Crop Coverage</div>
             </div>
-            <div className="text-center p-3 bg-white/80 rounded-lg border border-green-200/50 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-green-600">{result.realTimeMetrics.weedCoverage}%</div>
+            <div className="text-center p-3 bg-white/80 rounded-lg border border-[#FFC50F]/20 backdrop-blur-sm">
+              <div className="text-2xl font-bold text-[#FFC50F]">{result.realTimeMetrics.weedCoverage}%</div>
               <div className="text-xs text-gray-600 mt-1">Weed Coverage</div>
             </div>
             <div className="text-center p-3 bg-white/80 rounded-lg border border-purple-200/50 backdrop-blur-sm">
@@ -247,11 +247,11 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Activity className="w-5 h-5 text-green-600" />
+            <div className="p-2 bg-[#FDE7B3]/30 rounded-lg">
+              <Activity className="w-5 h-5 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Field Performance</h3>
           </div>
@@ -302,16 +302,16 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="p-6 bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-emerald-100 rounded-xl">
-              <TrendingUp className="w-6 h-6 text-emerald-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <TrendingUp className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Yield Prediction</h3>
           </div>
           <div className="text-center mb-4">
-            <div className="text-4xl font-bold text-emerald-600 mb-2">{result.yieldPrediction}</div>
+            <div className="text-4xl font-bold text-[#63A361] mb-2">{result.yieldPrediction}</div>
             <p className="text-sm text-gray-600">Expected harvest output</p>
           </div>
         </motion.div>
@@ -321,23 +321,23 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="p-6 bg-gradient-to-br from-lime-50 to-green-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-lime-100 rounded-xl">
-              <Leaf className="w-6 h-6 text-lime-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Leaf className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Vegetation Index (NDVI)</h3>
           </div>
           <div className="text-center mb-6">
-            <div className="text-6xl font-bold text-lime-600 mb-4">{result.vegetationIndex}</div>
+            <div className="text-6xl font-bold text-[#63A361] mb-4">{result.vegetationIndex}</div>
             <div className="text-sm text-gray-600 mb-6">Health Indicator</div>
-            <div className="relative h-4 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full">
+            <div className="relative h-4 bg-gradient-to-r from-red-500 via-[#FFC50F] to-[#63A361] rounded-full">
               <motion.div
                 initial={{ left: '0%' }}
                 animate={{ left: `${result.vegetationIndex}%` }}
                 transition={{ duration: 1, delay: 0.9 }}
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 bg-white border-4 border-lime-600 rounded-full shadow-lg"
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 bg-white border-4 border-[#63A361] rounded-full shadow-lg"
               />
             </div>
             <div className="flex justify-between text-xs text-gray-500 mt-2">
@@ -354,11 +354,11 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
-        className="p-6 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+        className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
       >
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 bg-orange-100 rounded-xl">
-            <AlertTriangle className="w-6 h-6 text-orange-600" />
+          <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+            <AlertTriangle className="w-6 h-6 text-[#5B532C]" />
           </div>
           <h3 className="text-lg font-bold text-gray-900">Visible Issues</h3>
         </div>
@@ -376,8 +376,8 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
         className="p-6 bg-white/90 rounded-2xl border shadow-xl backdrop-blur-md border-white/30"
       >
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <Activity className="w-5 h-5 text-blue-600" />
+          <div className="p-2 bg-[#63A361]/10 rounded-lg">
+            <Activity className="w-5 h-5 text-[#63A361]" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900">Environmental Factors</h3>
         </div>
@@ -398,7 +398,7 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
                 <span
                   className={`px-2 py-1 text-xs font-medium rounded-full ${
                     factor.status === 'optimal'
-                      ? 'bg-green-100 text-green-700'
+                      ? 'bg-[#FDE7B3]/30 text-[#63A361]'
                       : factor.status === 'warning'
                       ? 'bg-yellow-100 text-yellow-700'
                       : 'bg-red-100 text-red-700'
@@ -422,8 +422,8 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           className="p-6 bg-white/90 rounded-2xl border shadow-xl backdrop-blur-md border-white/30"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-green-100 rounded-xl">
-              <Target className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Target className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Precision Farming Tips</h3>
           </div>
@@ -472,7 +472,7 @@ export const FieldMonitoringResult: React.FC<Props> = ({ result, image, onRetry 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={onRetry}
-          className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-full flex items-center gap-2 shadow-lg"
+          className="px-8 py-3 bg-[#63A361] hover:bg-[#5B532C] text-white font-medium rounded-full flex items-center gap-2"
         >
           <Sparkles className="w-5 h-5" />
           Analyze Another Field

@@ -81,25 +81,24 @@ const ReviewCard = ({
     return (
         <figure
             className={cn(
-                "relative h-full w-fit cursor-pointer overflow-hidden rounded-2xl border-2 p-5 sm:w-64 transition-all duration-500 group",
-                // premium glassmorphism with vibrant colors
-                "border-white/30 bg-gradient-to-br from-white/80 via-green-50/40 to-emerald-50/40",
-                "backdrop-blur-xl shadow-2xl",
-                "hover:border-green-400/40 hover:shadow-emerald-500/20 hover:shadow-2xl hover:scale-105 hover:bg-gradient-to-br hover:from-white/90 hover:via-green-50/60 hover:to-emerald-50/60",
+                "relative h-full w-fit cursor-pointer overflow-hidden rounded-2xl border p-5 sm:w-64 transition-all duration-500 group",
+                // Matte finish with subtle colors
+                "border-[#5B532C]/20 bg-[#FDE7B3]/10",
+                "hover:border-[#63A361]/40 hover:bg-[#FDE7B3]/30 hover:scale-105",
             )}
         >
-            {/* Glossy overlay effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Matte overlay effect */}
+            <div className="absolute inset-0 bg-[#5B532C]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="flex flex-row items-center gap-3 mb-3">
-                <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 via-emerald-500 to-green-600 shadow-lg shadow-green-500/30 border border-white/20 group-hover:scale-110 transition-transform duration-500">
-                    <Icon className="w-5 h-5 text-white drop-shadow-sm" />
+                <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-[#63A361] border border-[#5B532C]/20 group-hover:scale-110 transition-transform duration-500">
+                    <Icon className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex flex-col flex-1">
-                    <figcaption className="text-sm font-extrabold text-gray-900 group-hover:text-green-700 transition-colors">
+                    <figcaption className="text-sm font-extrabold text-gray-900 group-hover:text-[#63A361] transition-colors">
                         {name}
                     </figcaption>
-                    <p className="text-xs font-semibold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-green-700">{username}</p>
+                    <p className="text-xs font-semibold text-[#5B532C]">{username}</p>
                 </div>
             </div>
             <blockquote className="mt-3 text-xs text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors">

@@ -24,12 +24,12 @@ interface Props {
 export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }) => {
   const getSeverityColor = (severity: string) => {
     const colors = {
-      none: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', icon: 'text-green-600' },
-      mild: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', icon: 'text-yellow-600' },
-      moderate: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200', icon: 'text-orange-600' },
+      none: { bg: 'bg-[#FDE7B3]/20', text: 'text-[#63A361]', border: 'border-[#63A361]/20', icon: 'text-[#63A361]' },
+      mild: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
+      moderate: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
       severe: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: 'text-red-600' },
-      low: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', icon: 'text-blue-600' },
-      medium: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200', icon: 'text-orange-600' },
+      low: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#63A361]', border: 'border-[#63A361]/30', icon: 'text-[#63A361]' },
+      medium: { bg: 'bg-[#FDE7B3]/30', text: 'text-[#FFC50F]', border: 'border-[#FFC50F]/30', icon: 'text-[#FFC50F]' },
       high: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', icon: 'text-red-600' },
     };
     return colors[severity as keyof typeof colors] || colors.none;
@@ -37,14 +37,14 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
 
   // Prepare chart data
   const healthData = [
-    { name: 'Health Score', value: result.realTimeMetrics.healthScore, fill: '#3b82f6' },
-    { name: 'Stress Level', value: result.realTimeMetrics.stressLevel, fill: '#10b981' },
-    { name: 'Yield Impact', value: result.realTimeMetrics.yieldImpact, fill: '#a855f7' },
+    { name: 'Health Score', value: result.realTimeMetrics.healthScore, fill: '#63A361' },
+    { name: 'Stress Level', value: result.realTimeMetrics.stressLevel, fill: '#63A361' },
+    { name: 'Yield Impact', value: result.realTimeMetrics.yieldImpact, fill: '#FFC50F' },
   ];
 
   const affectedAreaData = [
-    { name: 'Healthy', value: 100 - result.affectedArea, fill: '#10b981' },
-    { name: 'Affected', value: result.affectedArea, fill: '#3b82f6' },
+    { name: 'Healthy', value: 100 - result.affectedArea, fill: '#63A361' },
+    { name: 'Affected', value: result.affectedArea, fill: '#FFC50F' },
   ];
 
   return (
@@ -57,10 +57,10 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex justify-center items-center p-4 bg-green-50 rounded-xl border border-green-100 shadow-sm"
+        className="flex justify-center items-center p-4 bg-[#FDE7B3]/30 rounded-xl border border-[#63A361]/30"
       >
-        <CheckCircle2 className="mr-2 w-5 h-5 text-green-600" />
-        <span className="font-medium text-green-700">Crop analysis completed successfully</span>
+        <CheckCircle2 className="mr-2 w-5 h-5 text-[#63A361]" />
+        <span className="font-medium text-[#63A361]">Crop analysis completed successfully</span>
       </motion.div>
 
       {/* Image Preview */}
@@ -71,8 +71,8 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           className="p-6 bg-white/90 rounded-2xl shadow-xl border backdrop-blur-md border-white/30"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Leaf className="w-5 h-5 text-green-600" />
+            <div className="p-2 bg-[#FDE7B3]/30 rounded-lg">
+              <Leaf className="w-5 h-5 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Analyzed Crop Image</h3>
           </div>
@@ -89,16 +89,16 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-green-100 rounded-xl">
-              <Leaf className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Leaf className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Crop Type</h3>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600 mb-2">{result.cropType}</div>
+            <div className="text-2xl font-bold text-[#63A361] mb-2">{result.cropType}</div>
             <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full ${getSeverityColor(result.cropHealth).bg} ${getSeverityColor(result.cropHealth).border} border`}>
               <span className={`text-sm font-medium ${getSeverityColor(result.cropHealth).text}`}>
                 {result.cropHealth.toUpperCase()} Health
@@ -112,7 +112,7 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={`p-6 bg-gradient-to-br ${getSeverityColor(result.diseaseSeverity).bg} rounded-2xl border shadow-xl backdrop-blur-sm ${getSeverityColor(result.diseaseSeverity).border}`}
+          className={`p-6 bg-white rounded-2xl border ${getSeverityColor(result.diseaseSeverity).border}`}
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 ${getSeverityColor(result.diseaseSeverity).bg} rounded-xl border ${getSeverityColor(result.diseaseSeverity).border}`}>
@@ -135,7 +135,7 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={`p-6 bg-gradient-to-br ${getSeverityColor(result.pestSeverity).bg} rounded-2xl border shadow-xl backdrop-blur-sm ${getSeverityColor(result.pestSeverity).border}`}
+          className={`p-6 bg-white rounded-2xl border ${getSeverityColor(result.pestSeverity).border}`}
         >
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 ${getSeverityColor(result.pestSeverity).bg} rounded-xl border ${getSeverityColor(result.pestSeverity).border}`}>
@@ -158,16 +158,16 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-blue-100 rounded-xl">
-              <Target className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Target className="w-6 h-6 text-[#5B532C]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Confidence</h3>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-blue-600 mb-2">{result.confidenceLevel}%</div>
+            <div className="text-4xl font-bold text-[#63A361] mb-2">{result.confidenceLevel}%</div>
             <div className="text-sm text-gray-600">AI Accuracy</div>
           </div>
         </motion.div>
@@ -180,11 +180,11 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border shadow-xl backdrop-blur-sm border-white/30"
+          className="p-6 bg-[#FDE7B3]/10 rounded-2xl border border-[#5B532C]/20"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Activity className="w-5 h-5 text-green-600" />
+            <div className="p-2 bg-[#FDE7B3]/30 rounded-lg">
+              <Activity className="w-5 h-5 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Health Metrics</h3>
           </div>
@@ -224,8 +224,8 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
             </ResponsiveContainer>
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4">
-            <div className="text-center p-3 bg-white/80 rounded-lg border border-green-200/50 backdrop-blur-sm">
-              <div className="text-2xl font-bold text-green-600">{result.realTimeMetrics.healthScore}</div>
+            <div className="text-center p-3 bg-white rounded-lg border border-[#63A361]/30">
+              <div className="text-2xl font-bold text-[#63A361]">{result.realTimeMetrics.healthScore}</div>
               <div className="text-xs text-gray-600 mt-1">Health Score</div>
             </div>
             <div className="text-center p-3 bg-white/80 rounded-lg border border-red-200/50 backdrop-blur-sm">
@@ -258,7 +258,7 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
                 <defs>
                   <linearGradient id="healthyGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#22c55e" stopOpacity={1} />
-                    <stop offset="100%" stopColor="#10b981" stopOpacity={0.8} />
+                    <stop offset="100%" stopColor="#63A361" stopOpacity={0.8} />
                   </linearGradient>
                   <linearGradient id="affectedGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#f97316" stopOpacity={1} />
@@ -333,8 +333,8 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
         className="p-6 bg-white/90 rounded-2xl border shadow-xl backdrop-blur-md border-white/30"
       >
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <Activity className="w-5 h-5 text-blue-600" />
+          <div className="p-2 bg-[#63A361]/10 rounded-lg">
+            <Activity className="w-5 h-5 text-[#63A361]" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900">Environmental Factors</h3>
         </div>
@@ -353,7 +353,7 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
                 <span className="text-sm font-medium text-gray-900">{factor.factor}</span>
                 <span
                   className={`px-2 py-1 text-xs font-medium rounded-full ${factor.status === 'optimal'
-                    ? 'bg-green-100 text-green-700'
+                    ? 'bg-[#FDE7B3]/30 text-[#63A361]'
                     : factor.status === 'warning'
                       ? 'bg-yellow-100 text-yellow-700'
                       : 'bg-red-100 text-red-700'
@@ -377,8 +377,8 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           className="p-6 bg-white/90 rounded-2xl border shadow-xl backdrop-blur-md border-white/30"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-green-100 rounded-xl">
-              <Shield className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-[#FDE7B3]/30 rounded-xl">
+              <Shield className="w-6 h-6 text-[#63A361]" />
             </div>
             <h3 className="text-lg font-bold text-gray-900">Treatment Recommendations</h3>
           </div>
@@ -427,7 +427,7 @@ export const CropMonitoringResult: React.FC<Props> = ({ result, image, onRetry }
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={onRetry}
-          className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-full flex items-center gap-2 shadow-lg"
+          className="px-8 py-3 bg-[#63A361] hover:bg-[#5B532C] text-white font-medium rounded-full flex items-center gap-2"
         >
           <Sparkles className="w-5 h-5" />
           Analyze Another Crop
