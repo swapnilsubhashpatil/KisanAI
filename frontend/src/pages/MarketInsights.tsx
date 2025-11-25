@@ -18,7 +18,6 @@ import {
   MapPin,
   Leaf,
   Zap,
-  Sparkles,
   AlertCircle
 } from 'lucide-react';
 import Select from 'react-select/async';
@@ -107,14 +106,13 @@ export const MarketInsights: React.FC<MarketInsightsProps> = () => {
     if (!source?.markets?.length) {
       return [] as string[];
     }
-
     const cropSet = new Set<string>();
     source.markets.forEach((market: Market) => {
       Object.keys(market.cropPrices || {}).forEach(crop => cropSet.add(crop));
     });
-
     return Array.from(cropSet).sort((a, b) => a.localeCompare(b));
   }, [selectedCity, baseCityData]);
+
   // Hydrate cached selection and processed data
   useEffect(() => {
     const cached = loadResult<{
@@ -147,47 +145,41 @@ export const MarketInsights: React.FC<MarketInsightsProps> = () => {
     }
   }, []);
 
+  const getDeterministicHash = (input: string) => {
+    let hash = 0;
+    for (let i = 0; i < input.length; i += 1) {
+      hash = (hash << 5) - hash + input.charCodeAt(i);
+      hash |= 0;
+    }
+    return hash;
+  };
 
-const getDeterministicHash = (input: string) => {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
-  }
-  return hash;
-};
+  const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
-const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-
-// Add realistic market price variations to base data without randomness
-const diversifyMarketPrices = useCallback((cityData: any) => {
-  const diversifiedData = JSON.parse(JSON.stringify(cityData));
-
-  diversifiedData.markets = diversifiedData.markets.map((market: any) => {
-    const marketVariations = Object.fromEntries(
-      Object.entries(market.cropPrices).map(([crop, price]) => {
-        const priceStr = price as string;
-        const basePrice = parseInt(priceStr.replace(/[^0-9]/g, ''), 10);
-        if (!basePrice) {
-          return [crop, price];
-        }
-
-        const seed = getDeterministicHash(`${cityData.city}-${market.name}-${crop}`);
-        const variation = ((seed % 7) - 3) / 100; // -3% to +3%
-        const adjustedPrice = Math.max(500, Math.round(basePrice * (1 + variation)));
-
-        return [crop, `₹${adjustedPrice.toLocaleString('en-IN')}/quintal`];
-      })
-    );
-
-    return {
-      ...market,
-      cropPrices: marketVariations
-    };
-  });
-
-  return diversifiedData;
-}, []);
+  // Add realistic market price variations to base data without randomness
+  const diversifyMarketPrices = useCallback((cityData: any) => {
+    const diversifiedData = JSON.parse(JSON.stringify(cityData));
+    diversifiedData.markets = diversifiedData.markets.map((market: any) => {
+      const marketVariations = Object.fromEntries(
+        Object.entries(market.cropPrices).map(([crop, price]) => {
+          const priceStr = price as string;
+          const basePrice = parseInt(priceStr.replace(/[^0-9]/g, ''), 10);
+          if (!basePrice) {
+            return [crop, price];
+          }
+          const seed = getDeterministicHash(`${cityData.city}-${market.name}-${crop}`);
+          const variation = ((seed % 7) - 3) / 100; // -3% to +3%
+          const adjustedPrice = Math.max(500, Math.round(basePrice * (1 + variation)));
+          return [crop, `₹${adjustedPrice.toLocaleString('en-IN')}/quintal`];
+        })
+      );
+      return {
+        ...market,
+        cropPrices: marketVariations
+      };
+    });
+    return diversifiedData;
+  }, []);
 
   const fetchCityData = async (cityName: string) => {
     setIsLoading(true);
@@ -203,9 +195,8 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
     setIsWeatherAccordionOpen(true);
     setWeatherData(null);
     setWeatherAnalysis('');
-
+    setCropAnalyses([]);
     await processMarketData();
-
     let cityData = null;
     if (selectedState === 'Maharashtra') {
       cityData = mahaData.cities.find(city => city.city === cityName);
@@ -222,7 +213,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
     } else if (selectedState === 'Telangana') {
       cityData = telanganaData.cities.find(city => city.city === cityName);
     }
-
     if (!cityData) {
       toast.error('City data not found', {
         style: {
@@ -236,31 +226,27 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
       setAiPipelineStep('');
       return;
     }
-
     const diversifiedCityData = diversifyMarketPrices(cityData);
     setBaseCityData(diversifiedCityData);
-
     try {
       setAiPipelineStep('Fetching live weather impact...');
       setIsWeatherLoading(true);
       const { cropAnalyses: cropAnalysisData, weatherData: weatherInfo, overallAnalysis } = await auditMarketWithWeather(diversifiedCityData, cityName);
-
       setSelectedCity(diversifiedCityData); // Keep original data without modifications
       setWeatherData(weatherInfo);
       setWeatherAnalysis(overallAnalysis);
       setCropAnalyses(cropAnalysisData);
       setIsWeatherSectionVisible(true);
       setHasLoadedCity(true);
-
       saveResult('market', {
         selectedState,
-        selectedCity: diversifiedCityData,
+        selectedCity: diversifiedCityData as any,
         processedData: null,
         showProcessedData: false,
         insightMode,
         weeklyTrendView,
         selectedCrop: '',
-        cropAnalyses: cropAnalyses
+        cropAnalyses: cropAnalysisData as any
       });
     } catch (error) {
       console.error('Weather integration error:', error);
@@ -278,13 +264,13 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
       setHasLoadedCity(true);
       saveResult('market', {
         selectedState,
-        selectedCity: diversifiedCityData,
+        selectedCity: diversifiedCityData as any,
         processedData: null,
         showProcessedData: false,
         insightMode,
         weeklyTrendView,
         selectedCrop: '',
-        cropAnalyses: [] // In error case, no crop analyses
+        cropAnalyses: [] as any // In error case, no crop analyses
       });
     } finally {
       setIsWeatherLoading(false);
@@ -305,17 +291,14 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
 
   const processNumericValue = useCallback((value: string | number, mode: InsightMode, cropType?: string, marketName?: string): string => {
     const identifier = `${cropType || 'generic'}-${marketName || 'market'}-${mode}`;
-
     const formatCrore = (amount: number) => `₹${Math.max(0, Math.round(amount)).toLocaleString('en-IN')} Cr`;
     const formatRupee = (amount: number) => `₹${Math.max(0, Math.round(amount)).toLocaleString('en-IN')}/quintal`;
-
     if (typeof value === 'string') {
       if (value.includes('Cr')) {
         const numericPart = parseFloat(value.replace(/[^0-9.]/g, ''));
         if (Number.isNaN(numericPart)) {
           return value;
         }
-
         let factor = 1;
         if (mode === 'Estimate') {
           factor = getDeterministicFactor(identifier, 0.05);
@@ -324,17 +307,14 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
         } else if (mode === 'Predictive') {
           factor = 1.05 * getDeterministicFactor(`${identifier}-pd`, 0.08);
         }
-
         const adjusted = numericPart * factor;
         return formatCrore(adjusted);
       }
-
       if (value.includes('/quintal')) {
         const numericPart = parseInt(value.replace(/[^0-9]/g, ''), 10);
         if (!numericPart) {
           return value;
         }
-
         let factor = 1;
         if (mode === 'Estimate') {
           factor = getDeterministicFactor(identifier, 0.06);
@@ -343,12 +323,10 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
         } else if (mode === 'Predictive') {
           factor = 1.04 * getDeterministicFactor(`${identifier}-pd`, 0.1);
         }
-
         const adjusted = clamp(numericPart * factor, 400, 65000);
         return formatRupee(adjusted);
       }
     }
-
     if (typeof value === 'number') {
       let factor = 1;
       if (mode === 'Estimate') {
@@ -358,10 +336,8 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
       } else if (mode === 'Predictive') {
         factor = 1.05 * getDeterministicFactor(`${identifier}-pd`, 0.08);
       }
-
       return Math.max(0, Math.round((value || 0) * factor)).toLocaleString('en-IN');
     }
-
     return value.toString();
   }, [getDeterministicFactor]);
 
@@ -376,7 +352,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
       'Validating data accuracy...',
       'Finalizing report...'
     ];
-
     for (let i = 0; i < steps.length; i++) {
       setAiPipelineStep(steps[i]);
       await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 300));
@@ -394,7 +369,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
       });
       return;
     }
-
     if (!selectedCrop) {
       toast.error('Please select a crop', {
         style: {
@@ -405,12 +379,9 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
       });
       return;
     }
-
     setIsLoading(true);
     setShowProcessedData(true);
-
     const processedCityData = JSON.parse(JSON.stringify(selectedCity));
-
     try {
       processedCityData.marketStats = {
         ...processedCityData.marketStats,
@@ -430,7 +401,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
           selectedCrop
         ),
       };
-
       processedCityData.markets = processedCityData.markets.map((market: Market) => ({
         ...market,
         cropPrices: Object.fromEntries(
@@ -440,15 +410,12 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
           ])
         )
       }));
-
       processedCityData.priceAlerts = processedCityData.priceAlerts.map((alert: any) => ({
         ...alert,
         price: processNumericValue(alert.price, insightMode, alert.crop)
       }));
-
       setProcessedData(processedCityData);
       setIsLoading(false);
-
       saveResult('market', {
         selectedState,
         selectedCity,
@@ -457,9 +424,8 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
         insightMode,
         weeklyTrendView,
         selectedCrop,
-        cropAnalyses: cropAnalyses
+        cropAnalyses: cropAnalyses as any
       });
-
       toast.success(`${insightMode} insights generated successfully`, {
         icon: '🎯',
         style: {
@@ -488,13 +454,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
     </div>
   );
 
-  // Skeleton Placeholder Components
-  const SkeletonCard = ({ className = "" }: { className?: string }) => (
-    <div className={`relative overflow-hidden bg-gradient-to-br from-[#FDE7B3]/20 to-white rounded-2xl border border-[#63A361]/10 ${className}`}>
-      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-    </div>
-  );
-
   const PlaceholderDashboard = () => (
     <motion.div
       initial={{ opacity: 0 }}
@@ -505,7 +464,7 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
       <div className="relative p-8 text-center bg-gradient-to-br from-[#FDE7B3]/30 via-white to-[#63A361]/5 rounded-3xl border border-[#63A361]/20 overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#63A361]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#FFC50F]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-        
+
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -537,7 +496,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
           </div>
         </motion.div>
       </div>
-
       {/* Skeleton Stats Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {[DollarSign, Users, BarChart2].map((Icon, i) => (
@@ -560,7 +518,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
           </motion.div>
         ))}
       </div>
-
       {/* Skeleton Charts */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Mock Line Chart */}
@@ -611,7 +568,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
             </div>
           </div>
         </motion.div>
-
         {/* Mock Bar Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -640,7 +596,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
           </div>
         </motion.div>
       </div>
-
       {/* Feature Preview Cards */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {[
@@ -696,30 +651,22 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
     if (!hasLoadedCity) {
       return null;
     }
-
     if (showProcessedData && processedData) {
       return processedData;
     }
-
     return selectedCity;
   }, [hasLoadedCity, processedData, selectedCity, showProcessedData]);
 
   // Chart data generation functions - Logical and meaningful
-
-
   // Create stable crop activity data that doesn't change with toggles
   const getStableCropActivityData = useCallback(() => {
     if (!displayData?.markets?.length) return [];
-
     const referenceMarket = displayData.markets[0];
     if (!referenceMarket?.cropPrices) return [];
-
     const crops = Object.keys(referenceMarket.cropPrices);
-
     return crops.map((crop) => {
       const raw = referenceMarket.cropPrices[crop] || '₹0/quintal';
       const cropPrice = parseInt(raw.replace(/[^0-9]/g, ''), 10) || 2000;
-
       const baseYields: { [key: string]: number } = {
         'Wheat': 35,
         'Rice': 40,
@@ -734,12 +681,10 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
         'Tomato': 300,
         'Grapes': 25
       };
-
       const baseYield = baseYields[crop] || 30;
       const cropHash = crop.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
       const yieldVariation = (cropHash % 20) - 10;
       const yieldPerAcre = Math.max(10, baseYield + yieldVariation);
-
       return {
         name: crop,
         price: cropPrice,
@@ -755,7 +700,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
     const hourOffset = now.getHours() % 2; // 0 or 1 hour offset
     const lastUpdate = new Date(now.getTime() - hourOffset * 60 * 60 * 1000);
     const nextUpdate = new Date(now.getTime() + 30 * 60 * 1000); // Next update in 30 minutes
-
     return {
       lastUpdate: lastUpdate.toLocaleTimeString('en-IN', {
         hour: '2-digit',
@@ -772,28 +716,21 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
     };
   }, []);
 
-
   const getWeeklyPriceTrend = (cityData: any) => {
     if (!cityData?.markets) return [];
-
     const crops = Object.keys(cityData.markets[0]?.cropPrices || {});
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
     // Generate data for each day with all crops
     return days.map((day, index) => {
       const dayData: any = { day };
-
       crops.forEach((crop, cropIndex) => {
         const basePrice = parseInt(cityData.markets[0].cropPrices[crop]?.replace(/[^0-9]/g, ''), 10) || 2000;
-
         // Small variations based on day of week and crop characteristics
         const dayMultiplier = index >= 5 ? 0.95 : 1.0; // Weekend reduction
         const cropVariation = Math.sin(index * 0.8 + cropIndex * 0.5) * 0.05; // Different pattern per crop
         const price = Math.round(basePrice * dayMultiplier * (1 + cropVariation));
-
         dayData[crop] = price;
       });
-
       return dayData;
     });
   };
@@ -801,23 +738,18 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
   // Create stable weekly trend data that doesn't change with toggles
   const getStableWeeklyTrendData = useCallback(() => {
     if (!displayData?.markets?.length) return [];
-
     const referenceMarket = displayData.markets[0];
     const crops = Object.keys(referenceMarket?.cropPrices || {});
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
     return days.map((day, index) => {
       const dayData: Record<string, number | string> = { day };
-
       crops.forEach((crop, cropIndex) => {
         const basePrice = parseInt(referenceMarket.cropPrices[crop]?.replace(/[^0-9]/g, ''), 10) || 2000;
         const dayMultiplier = index >= 5 ? 0.95 : 1.0;
         const cropVariation = Math.sin(index * 0.8 + cropIndex * 0.5) * 0.05;
         const price = Math.round(basePrice * dayMultiplier * (1 + cropVariation));
-
         dayData[crop] = price;
       });
-
       return dayData;
     });
   }, [displayData]);
@@ -825,19 +757,15 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
   // Generate synchronized price alerts based on weekly trends
   const getSynchronizedPriceAlerts = (cityData: any) => {
     if (!cityData?.markets) return [];
-
     const crops = Object.keys(cityData.markets[0]?.cropPrices || {});
     const weeklyData = getWeeklyPriceTrend(cityData);
-
     return crops.map((crop, index) => {
       // Get current price and previous day price from weekly trend
       const currentPrice = weeklyData[weeklyData.length - 1]?.[crop] || 2000;
       const previousPrice = weeklyData[weeklyData.length - 2]?.[crop] || 2000;
-
       // Calculate percentage change
       const change = ((currentPrice - previousPrice) / previousPrice) * 100;
       const changePercent = Math.round(change * 10) / 10;
-
       // Generate realistic time and reason
       const times = ['30 min ago', '1 hour ago', '2 hours ago', '3 hours ago'];
       const reasons = [
@@ -847,7 +775,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
         'Export market fluctuations',
         'Seasonal demand patterns'
       ];
-
       return {
         crop,
         change: `${changePercent > 0 ? '+' : ''}${changePercent}%`,
@@ -889,7 +816,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
             Real-time updates from Indian agricultural markets
           </motion.p>
         </div>
-
         {/* Selection Panel */}
         <div className="px-4 mx-auto mb-8 max-w-4xl md:mb-12 sm:px-0">
           <div className="p-8 bg-white rounded-2xl border border-[#5B532C]/10">
@@ -903,191 +829,181 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                 <p className="text-sm text-[#5B532C]/60">Choose your market location to view insights</p>
               </div>
             </div>
-
-              {/* Step 1: Location Selection */}
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#63A361] text-white text-xs font-bold">1</div>
-                  <label className="text-sm font-semibold text-[#5B532C]">Select Location</label>
-                </div>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#63A361] z-10" />
-                  <Select
-                    cacheOptions
-                    loadOptions={async (inputValue) => {
-                      await new Promise(resolve => setTimeout(resolve, 200));
-                      const maharashtraCities = cityData.mahacities || [];
-                      return maharashtraCities
-                        .filter((city: string) => city.toLowerCase().includes(inputValue.toLowerCase()))
-                        .map((city: string) => ({
-                          value: city,
-                          label: city,
-                          type: 'city'
-                        }));
-                    }}
-                    onChange={(option: any) => {
-                      if (option?.type === 'city') {
-                        setSelectedState('Maharashtra');
-                        fetchCityData(option.value);
-                      }
-                    }}
-                    isDisabled={isLoading}
-                    className="text-base"
-                    placeholder="Search and select city in Maharashtra..."
-                    styles={{
-                      control: (base) => ({
-                        ...base,
-                        background: 'rgba(255, 255, 255, 0.8)',
-                        borderColor: 'rgba(91, 83, 44, 0.1)',
-                        borderWidth: '2px',
-                        borderRadius: '0.75rem',
-                        padding: '0.5rem 0.5rem 0.5rem 3rem',
-                        boxShadow: 'none',
-                        minHeight: '56px',
-                        '&:hover': {
-                          borderColor: 'rgba(99, 163, 97, 0.4)'
-                        }
-                      }),
-                      menu: (base) => ({
-                        ...base,
-                        zIndex: 20,
-                        background: 'rgba(255, 255, 255, 0.98)',
-                        backdropFilter: 'blur(8px)',
-                        borderRadius: '0.75rem',
-                        border: '1px solid rgba(99, 163, 97, 0.2)',
-                        boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.15)'
-                      }),
-                      option: (base, state) => ({
-                        ...base,
-                        background: state.isFocused ? 'rgba(99, 163, 97, 0.1)' : 'transparent',
-                        color: state.isFocused ? '#5B532C' : '#374151',
-                        cursor: 'pointer',
-                        padding: '12px 16px'
-                      }),
-                      placeholder: (base) => ({
-                        ...base,
-                        color: 'rgba(91, 83, 44, 0.5)'
-                      })
-                    }}
-                    defaultOptions
-                  />
-                </div>
+            {/* Step 1: Location Selection */}
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#63A361] text-white text-xs font-bold">1</div>
+                <label className="text-sm font-semibold text-[#5B532C]">Select Location</label>
               </div>
-
-              {hasLoadedCity && (
-                <div className="space-y-6 mt-6">
-                  {/* Step 2: Crop & Mode Selection */}
-                  <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#63A361] text-white text-xs font-bold">2</div>
-                      <label className="text-sm font-semibold text-[#5B532C]">Configure Analysis</label>
-                    </div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      {/* Crop Selection */}
-                      <div>
-                        <label className="block mb-2 text-sm font-medium text-[#5B532C]/70">Focus Crop</label>
-                        <div className="relative">
-                          <Leaf className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#63A361]" />
-                          <select
-                            value={selectedCrop}
-                            onChange={(e) => {
-                              setSelectedCrop(e.target.value);
-                              setProcessedData(null);
-                              setShowProcessedData(false);
-                            }}
-                            className="w-full py-3 pl-11 pr-4 rounded-lg border border-[#5B532C]/20 bg-white text-[#5B532C] appearance-none cursor-pointer focus:outline-none focus:border-[#63A361]"
-                          >
-                            <option value="">Select crop for insights...</option>
-                            {availableCrops.map((crop) => (
-                              <option key={crop} value={crop}>{crop}</option>
-                            ))}
-                          </select>
-                          <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5B532C]/50 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#63A361] z-10" />
+                <Select
+                  cacheOptions
+                  loadOptions={async (inputValue) => {
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    const maharashtraCities = cityData.mahacities || [];
+                    return maharashtraCities
+                      .filter((city: string) => city.toLowerCase().includes(inputValue.toLowerCase()))
+                      .map((city: string) => ({
+                        value: city,
+                        label: city,
+                        type: 'city'
+                      }));
+                  }}
+                  onChange={(option: any) => {
+                    if (option?.type === 'city') {
+                      setSelectedState('Maharashtra');
+                      fetchCityData(option.value);
+                    }
+                  }}
+                  isDisabled={isLoading}
+                  className="text-base"
+                  placeholder="Search and select city in Maharashtra..."
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      background: 'rgba(255, 255, 255, 0.8)',
+                      borderColor: 'rgba(91, 83, 44, 0.1)',
+                      borderWidth: '2px',
+                      borderRadius: '0.75rem',
+                      padding: '0.5rem 0.5rem 0.5rem 3rem',
+                      boxShadow: 'none',
+                      minHeight: '56px',
+                      '&:hover': {
+                        borderColor: 'rgba(99, 163, 97, 0.4)'
+                      }
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      zIndex: 20,
+                      background: 'rgba(255, 255, 255, 0.98)',
+                      backdropFilter: 'blur(8px)',
+                      borderRadius: '0.75rem',
+                      border: '1px solid rgba(99, 163, 97, 0.2)',
+                      boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.15)'
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      background: state.isFocused ? 'rgba(99, 163, 97, 0.1)' : 'transparent',
+                      color: state.isFocused ? '#5B532C' : '#374151',
+                      cursor: 'pointer',
+                      padding: '12px 16px'
+                    }),
+                    placeholder: (base) => ({
+                      ...base,
+                      color: 'rgba(91, 83, 44, 0.5)'
+                    })
+                  }}
+                  defaultOptions
+                />
+              </div>
+            </div>
+            {hasLoadedCity && (
+              <div className="space-y-6 mt-6">
+                {/* Step 2: Crop & Mode Selection */}
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#63A361] text-white text-xs font-bold">2</div>
+                    <label className="text-sm font-semibold text-[#5B532C]">Configure Analysis</label>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {/* Crop Selection */}
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-[#5B532C]/70">Focus Crop</label>
+                      <div className="relative">
+                        <Leaf className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#63A361]" />
+                        <select
+                          value={selectedCrop}
+                          onChange={(e) => {
+                            setSelectedCrop(e.target.value);
+                            setProcessedData(null);
+                            setShowProcessedData(false);
+                          }}
+                          className="w-full py-3 pl-11 pr-4 rounded-lg border border-[#5B532C]/20 bg-white text-[#5B532C] appearance-none cursor-pointer focus:outline-none focus:border-[#63A361]"
+                        >
+                          <option value="">Select crop for insights...</option>
+                          {availableCrops.map((crop) => (
+                            <option key={crop} value={crop}>{crop}</option>
+                          ))}
+                        </select>
+                        <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5B532C]/50 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
                       </div>
-
-                      {/* Insight Mode Selection */}
-                      <div>
-                        <label className="block mb-2 text-sm font-medium text-[#5B532C]/70">Insight Mode</label>
-                        <div className="relative">
-                          <Zap className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#FFC50F]" />
-                          <select
-                            value={insightMode}
-                            onChange={(e) => {
-                              setInsightMode(e.target.value as InsightMode);
-                              setProcessedData(null);
-                              setShowProcessedData(false);
-                            }}
-                            className="w-full py-3 pl-11 pr-4 rounded-lg border border-[#5B532C]/20 bg-white text-[#5B532C] appearance-none cursor-pointer focus:outline-none focus:border-[#63A361]"
-                          >
-                            <option value="Accurate">Accurate Data</option>
-                            <option value="Estimate">Estimated Data</option>
-                            <option value="Realtime">Realtime Data</option>
-                            <option value="Predictive">Predictive Data</option>
-                          </select>
-                          <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5B532C]/50 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
+                    </div>
+                    {/* Insight Mode Selection */}
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-[#5B532C]/70">Insight Mode</label>
+                      <div className="relative">
+                        <Zap className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#FFC50F]" />
+                        <select
+                          value={insightMode}
+                          onChange={(e) => {
+                            setInsightMode(e.target.value as InsightMode);
+                            setProcessedData(null);
+                            setShowProcessedData(false);
+                          }}
+                          className="w-full py-3 pl-11 pr-4 rounded-lg border border-[#5B532C]/20 bg-white text-[#5B532C] appearance-none cursor-pointer focus:outline-none focus:border-[#63A361]"
+                        >
+                          <option value="Accurate">Accurate Data</option>
+                          <option value="Estimate">Estimated Data</option>
+                          <option value="Realtime">Realtime Data</option>
+                          <option value="Predictive">Predictive Data</option>
+                        </select>
+                        <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5B532C]/50 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
                       </div>
                     </div>
                   </div>
-
-                  {/* Generate Button */}
-                  <button
-                    onClick={handleGetInsights}
-                    disabled={isLoading || !selectedCity || !selectedCrop}
-                    className={`w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-colors ${
-                      selectedCity && selectedCrop && !isLoading
-                        ? "bg-[#63A361] text-white"
-                        : "bg-[#5B532C]/10 text-[#5B532C]/40 cursor-not-allowed"
+                </div>
+                {/* Generate Button */}
+                <button
+                  onClick={handleGetInsights}
+                  disabled={isLoading || !selectedCity || !selectedCrop}
+                  className={`w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-colors ${selectedCity && selectedCrop && !isLoading
+                    ? "bg-[#63A361] text-white"
+                    : "bg-[#5B532C]/10 text-[#5B532C]/40 cursor-not-allowed"
                     }`}
-                  >
-                    {isLoading ? (
-                      <>
-                        <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                        <span>Processing...</span>
-                      </>
-                    ) : (
-                      <>
-                        <BarChart2 className="w-5 h-5" />
-                        <span>{selectedCrop ? "Get Market Analysis" : "Select a crop above"}</span>
-                      </>
-                    )}
-                  </button>
-
-                  {/* Status Message */}
-                  {!selectedCrop && (
-                    <div className="p-4 rounded-lg bg-[#FDE7B3]/20 border border-[#FFC50F]/20">
-                      <div className="flex items-center gap-3">
-                        <AlertCircle className="w-5 h-5 text-[#FFC50F] flex-shrink-0" />
-                        <p className="text-sm text-[#5B532C]">Select a crop from the dropdown to unlock market insights</p>
-                      </div>
-                    </div>
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <BarChart2 className="w-5 h-5" />
+                      <span>{selectedCrop ? "Get Market Analysis" : "Select a crop above"}</span>
+                    </>
                   )}
-                </div>
-              )}
-
-              {showProcessedData && insightMode !== 'Accurate' && (
-                <div className="p-3 text-sm text-[#5B532C] bg-[#FDE7B3]/20 rounded-lg flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-[#FFC50F]" />
-                  {insightMode === 'Estimate' && 'AI-estimated values with market-specific variations'}
-                  {insightMode === 'Realtime' && 'AI-processed real-time values with seasonal adjustments'}
-                  {insightMode === 'Predictive' && 'AI-predicted 3-month forward projections with ML insights'}
-                </div>
-              )}
-
-              {hasLoadedCity && !selectedCrop && (
-                <div className="p-3 text-sm text-[#5B532C] bg-[#FDE7B3]/20 rounded-lg">
-                  Select a crop above to reveal the market dashboards and weather story.
-                </div>
-              )}
-            </div>
+                </button>
+                {/* Status Message */}
+                {!selectedCrop && (
+                  <div className="p-4 rounded-lg bg-[#FDE7B3]/20 border border-[#FFC50F]/20">
+                    <div className="flex items-center gap-3">
+                      <AlertCircle className="w-5 h-5 text-[#FFC50F] flex-shrink-0" />
+                      <p className="text-sm text-[#5B532C]">Select a crop from the dropdown to unlock market insights</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            {showProcessedData && insightMode !== 'Accurate' && (
+              <div className="p-3 text-sm text-[#5B532C] bg-[#FDE7B3]/20 rounded-lg flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-[#FFC50F]" />
+                {insightMode === 'Estimate' && 'AI-estimated values with market-specific variations'}
+                {insightMode === 'Realtime' && 'AI-processed real-time values with seasonal adjustments'}
+                {insightMode === 'Predictive' && 'AI-predicted 3-month forward projections with ML insights'}
+              </div>
+            )}
+            {hasLoadedCity && !selectedCrop && (
+              <div className="p-3 text-sm text-[#5B532C] bg-[#FDE7B3]/20 rounded-lg">
+                Select a crop above to reveal the market dashboards and weather story.
+              </div>
+            )}
           </div>
         </div>
-
         {isWeatherSectionVisible && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1115,7 +1031,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                   />
                 </div>
               </button>
-
               {isWeatherAccordionOpen && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
@@ -1125,7 +1040,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                   {isWeatherLoading && (
                     <LoadingSpinner />
                   )}
-
                   {!isWeatherLoading && weatherData && (
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1137,7 +1051,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                           <p className="text-2xl font-bold text-[#63A361]">{weatherData.main.temp}°C</p>
                           <p className="text-xs text-gray-500 mt-1">Feels like {weatherData.main.feels_like}°C</p>
                         </div>
-
                         <div className="p-4 rounded-xl bg-white/80 border border-[#63A361]/20">
                           <div className="flex items-center gap-2 mb-2">
                             <Droplets className="w-5 h-5 text-[#63A361]" />
@@ -1146,7 +1059,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                           <p className="text-2xl font-bold text-[#63A361]">{weatherData.main.humidity}%</p>
                           <p className="text-xs text-gray-500 mt-1">Pressure {weatherData.main.pressure} hPa</p>
                         </div>
-
                         <div className="p-4 rounded-xl bg-white/80 border border-[#63A361]/20">
                           <div className="flex items-center gap-2 mb-2">
                             <Wind className="w-5 h-5 text-[#63A361]" />
@@ -1155,7 +1067,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                           <p className="text-2xl font-bold text-[#63A361]">{weatherData.wind.speed} m/s</p>
                           <p className="text-xs text-gray-500 mt-1">Direction {weatherData.wind.deg}°</p>
                         </div>
-
                         <div className="p-4 rounded-xl bg-white/80 border border-[#63A361]/20">
                           <div className="flex items-center gap-2 mb-2">
                             <CloudRain className="w-5 h-5 text-[#63A361]" />
@@ -1165,7 +1076,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                           <p className="text-xs text-gray-500 mt-1">Visibility {weatherData.visibility} m</p>
                         </div>
                       </div>
-
                       {/* Add spacing between basic weather data and crop analyses */}
                       <div className="mt-6">
                         {cropAnalyses && cropAnalyses.length > 0 && (
@@ -1176,21 +1086,19 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                                 <div key={index} className="p-4 rounded-xl border backdrop-blur-sm transition-all bg-white/80 border-[#63A361]/20 hover:bg-white/90">
                                   <div className="flex justify-between items-center mb-2">
                                     <h5 className="font-bold text-[#63A361]">{analysis.crop}</h5>
-                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                      analysis.riskLevel === 'High' ? 'bg-red-100 text-red-800' : 
-                                      analysis.riskLevel === 'Medium' ? 'bg-[#FFC50F]/20 text-[#5B532C]' : 
-                                      'bg-[#63A361]/10 text-[#63A361]'
-                                    }`}>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${analysis.riskLevel === 'High' ? 'bg-red-100 text-red-800' :
+                                      analysis.riskLevel === 'Medium' ? 'bg-[#FFC50F]/20 text-[#5B532C]' :
+                                        'bg-[#63A361]/10 text-[#63A361]'
+                                      }`}>
                                       {analysis.riskLevel} Risk
                                     </span>
                                   </div>
                                   <p className="text-sm text-gray-700 mb-2">{analysis.impact}</p>
                                   <div className="flex items-start gap-2">
-                                    <div className={`mt-0.5 w-2 h-2 rounded-full ${
-                                      analysis.riskLevel === 'High' ? 'bg-red-500' : 
-                                      analysis.riskLevel === 'Medium' ? 'bg-[#FFC50F]' : 
-                                      'bg-[#63A361]'
-                                    }`}></div>
+                                    <div className={`mt-0.5 w-2 h-2 rounded-full ${analysis.riskLevel === 'High' ? 'bg-red-500' :
+                                      analysis.riskLevel === 'Medium' ? 'bg-[#FFC50F]' :
+                                        'bg-[#63A361]'
+                                      }`}></div>
                                     <div>
                                       <span className="text-sm font-medium text-gray-900">Recommendation:</span>
                                       <span className="text-sm text-gray-700 ml-1.5">{analysis.recommendation}</span>
@@ -1211,14 +1119,7 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                           </div>
                         )}
                       </div>
-                      
-                      {weatherAnalysis && (
-                        <div className="p-4 rounded-xl bg-white/80 border border-[#63A361]/20 mt-4">
-                          <h4 className="font-semibold text-gray-700 mb-2">Overall Weather Impact</h4>
-                          <p className="text-gray-600 whitespace-pre-line">{weatherAnalysis}</p>
-                        </div>
-                      )}
-                      
+
                       {weatherAnalysis && (
                         <div className="p-4 rounded-xl bg-white/80 border border-[#63A361]/20 mt-4">
                           <h4 className="font-semibold text-gray-700 mb-2">Overall Weather Impact</h4>
@@ -1227,7 +1128,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                       )}
                     </div>
                   )}
-
                   {!isWeatherLoading && !weatherData && (
                     <div className="p-4 text-sm text-[#5B532C] bg-white/80 border border-[#63A361]/20 rounded-xl">
                       Live weather data is unavailable right now. The market insights below are based on baseline market values.
@@ -1238,7 +1138,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
             </div>
           </motion.div>
         )}
-
         {/* AI Pipeline Status */}
         {isProcessing && (
           <motion.div
@@ -1263,7 +1162,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
               >
                 <Database className="w-8 h-8 text-white" />
               </motion.div>
-
               <div className="flex-1">
                 <motion.h3
                   className="mb-3 text-xl font-bold text-[#5B532C]"
@@ -1273,7 +1171,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                 >
                   AI Processing Market Data
                 </motion.h3>
-
                 <motion.p
                   className="mb-4 font-medium text-[#63A361]"
                   key={aiPipelineStep}
@@ -1283,7 +1180,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                 >
                   {aiPipelineStep}
                 </motion.p>
-
                 <div className="overflow-hidden relative w-full h-3 rounded-full bg-[#FDE7B3]/50">
                   <motion.div
                     className="absolute top-0 left-0 h-full bg-[#63A361] rounded-full"
@@ -1305,7 +1201,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                     style={{ width: "30%" }}
                   />
                 </div>
-
                 <motion.div
                   className="flex gap-2 mt-3"
                   initial={{ opacity: 0 }}
@@ -1332,23 +1227,20 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
             </div>
           </motion.div>
         )}
-
         {/* Placeholder Dashboard - Show when no data */}
         {!hasLoadedCity && !isLoading && (
           <PlaceholderDashboard />
         )}
-
         {/* Market Stats */}
         {isLoading ? (
           <LoadingSpinner />
         ) : hasLoadedCity && (
           <div className="grid grid-cols-1 gap-8 mb-8 lg:grid-cols-3 md:grid-cols-2">
-        {displayData && selectedCrop && getMarketStats(displayData).map((stat, index) => (
+            {displayData && selectedCrop && getMarketStats(displayData).map((stat, index) => (
               <StatCard key={index} stat={stat} index={index} />
             ))}
           </div>
         )}
-
         {/* Charts Section */}
         {displayData && selectedCrop && !isLoading && (
           <motion.div
@@ -1367,7 +1259,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                     <h3 className="text-lg font-bold text-gray-900">Weekly Price Trend</h3>
                   </div>
                 </div>
-
                 {/* View Toggle */}
                 <div className="flex gap-1 p-1 rounded-lg border bg-white border-[#63A361]/20">
                   <button
@@ -1392,7 +1283,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                   </button>
                 </div>
               </div>
-
               <div className="w-full h-80">
                 {weeklyTrendView === 'chart' ? (
                   <ResponsiveContainer width="100%" height="100%" minHeight={300}>
@@ -1471,7 +1361,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                 )}
               </div>
             </div>
-
             {/* Crop Price & Yield Chart with Dual Y-Axis */}
             <div className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#63A361]/20">
               <div className="flex gap-3 items-center mb-6">
@@ -1567,8 +1456,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
             </div>
           </motion.div>
         )}
-
-
         {/* Markets and Alerts Grid */}
         {displayData && selectedCrop && !isLoading && (
           <motion.div
@@ -1592,7 +1479,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                   <div className="text-sm font-semibold text-[#63A361]">{getTimelineInfo().nextUpdate}</div>
                 </div>
               </div>
-
               <div className="space-y-4">
                 {displayData.markets.map((market: Market, index: number) => (
                   <div key={index} className="p-5 rounded-xl border shadow-sm backdrop-blur-sm transition-all bg-[#FDE7B3]/10 border-[#63A361]/10 hover:bg-[#FDE7B3]/20 hover:shadow-md">
@@ -1609,7 +1495,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                 ))}
               </div>
             </div>
-
             {/* Price Alerts */}
             <div className="p-6 bg-white rounded-2xl border shadow-xl backdrop-blur-sm border-[#63A361]/20">
               <div className="flex justify-between items-center mb-6">
@@ -1626,7 +1511,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
                   <div className="text-sm font-semibold text-[#63A361]">Every 15 min</div>
                 </div>
               </div>
-
               <div className="space-y-4">
                 {getSynchronizedPriceAlerts(displayData).map((alert: any, index: number) => (
                   <div key={index} className="flex justify-between items-center p-5 rounded-xl shadow-sm backdrop-blur-sm transition-all bg-[#FDE7B3]/10 hover:bg-[#FDE7B3]/20 hover:shadow-md border border-[#63A361]/10">
@@ -1651,7 +1535,6 @@ const diversifyMarketPrices = useCallback((cityData: any) => {
             </div>
           </motion.div>
         )}
-
         {/* Footer */}
         <div className="mt-16 text-center">
           <motion.div

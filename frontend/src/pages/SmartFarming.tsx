@@ -291,7 +291,7 @@ const SmartFarming: React.FC = () => {
           budget: selectedBudget,
           custom: selectedTechnique === "other_farming" ? customFarmingType : undefined,
         },
-        analysisData: data,
+        analysisData: data as any,
         showResults: true,
       })
     } catch (err) {
