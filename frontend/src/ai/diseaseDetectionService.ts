@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getDiseaseDetectionPrompt, DiseasePromptConfig } from './diseasePrompt';
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-// Updated to use Gemini 2.5 Pro with latest API endpoint
+// Updated to use Gemini 2.5 Pro (latest stable release)
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${API_KEY}`;
 
 export interface DiseaseAnalysisResult {

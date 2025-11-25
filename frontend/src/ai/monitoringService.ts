@@ -17,7 +17,8 @@ import {
 } from '../types';
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${API_KEY}`;
+// Switched to latest stable Gemini 2.5 Pro as requested
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${API_KEY}`;
 
 interface GeminiResponse {
   candidates: Array<{
@@ -27,6 +28,29 @@ interface GeminiResponse {
       }>;
     };
   }>;
+}
+
+/**
+ * Helper to handle API rate limits with exponential backoff
+ */
+async function callGeminiAPI(payload: any, retries = 3, initialDelay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await axios.post<GeminiResponse>(API_URL, payload, {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000 // 30s timeout
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 429 && i < retries - 1) {
+        const delay = initialDelay * Math.pow(2, i);
+        console.warn(`Rate limited. Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw error;
+    }
+  }
+  throw new Error('Max retries reached');
 }
 
 /**
@@ -82,33 +106,27 @@ export async function analyzeCropImage(
     const prompt = getCropMonitoringPrompt(config);
     const base64Image = imageData.split(',')[1] || imageData;
 
-    const response = await axios.post<GeminiResponse>(
-      API_URL,
-      {
-        contents: [
-          {
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: 'image/jpeg',
-                  data: base64Image,
-                },
+    const response = await callGeminiAPI({
+      contents: [
+        {
+          parts: [
+            { text: prompt },
+            {
+              inline_data: {
+                mime_type: 'image/jpeg',
+                data: base64Image,
               },
-            ],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.4,
-          topK: 32,
-          topP: 1,
-          maxOutputTokens: 2048,
+            },
+          ],
         },
+      ],
+      generationConfig: {
+        temperature: 0.4,
+        topK: 32,
+        topP: 1,
+        maxOutputTokens: 2048,
       },
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    });
 
     const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('No response from AI model');
@@ -140,33 +158,27 @@ export async function analyzeSoilImage(
     const prompt = getSoilMonitoringPrompt(config);
     const base64Image = imageData.split(',')[1] || imageData;
 
-    const response = await axios.post<GeminiResponse>(
-      API_URL,
-      {
-        contents: [
-          {
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: 'image/jpeg',
-                  data: base64Image,
-                },
+    const response = await callGeminiAPI({
+      contents: [
+        {
+          parts: [
+            { text: prompt },
+            {
+              inline_data: {
+                mime_type: 'image/jpeg',
+                data: base64Image,
               },
-            ],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.4,
-          topK: 32,
-          topP: 1,
-          maxOutputTokens: 2048,
+            },
+          ],
         },
+      ],
+      generationConfig: {
+        temperature: 0.4,
+        topK: 32,
+        topP: 1,
+        maxOutputTokens: 2048,
       },
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    });
 
     const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('No response from AI model');
@@ -198,33 +210,27 @@ export async function analyzeThermalImage(
     const prompt = getThermalMonitoringPrompt(config);
     const base64Image = imageData.split(',')[1] || imageData;
 
-    const response = await axios.post<GeminiResponse>(
-      API_URL,
-      {
-        contents: [
-          {
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: 'image/jpeg',
-                  data: base64Image,
-                },
+    const response = await callGeminiAPI({
+      contents: [
+        {
+          parts: [
+            { text: prompt },
+            {
+              inline_data: {
+                mime_type: 'image/jpeg',
+                data: base64Image,
               },
-            ],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.4,
-          topK: 32,
-          topP: 1,
-          maxOutputTokens: 2048,
+            },
+          ],
         },
+      ],
+      generationConfig: {
+        temperature: 0.4,
+        topK: 32,
+        topP: 1,
+        maxOutputTokens: 2048,
       },
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    });
 
     const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('No response from AI model');
@@ -256,33 +262,27 @@ export async function analyzeFieldImage(
     const prompt = getFieldMonitoringPrompt(config);
     const base64Image = imageData.split(',')[1] || imageData;
 
-    const response = await axios.post<GeminiResponse>(
-      API_URL,
-      {
-        contents: [
-          {
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: 'image/jpeg',
-                  data: base64Image,
-                },
+    const response = await callGeminiAPI({
+      contents: [
+        {
+          parts: [
+            { text: prompt },
+            {
+              inline_data: {
+                mime_type: 'image/jpeg',
+                data: base64Image,
               },
-            ],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.4,
-          topK: 32,
-          topP: 1,
-          maxOutputTokens: 2048,
+            },
+          ],
         },
+      ],
+      generationConfig: {
+        temperature: 0.4,
+        topK: 32,
+        topP: 1,
+        maxOutputTokens: 2048,
       },
-      {
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    });
 
     const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('No response from AI model');
