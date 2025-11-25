@@ -20,6 +20,7 @@ import {
   Zap,
   AlertCircle
 } from 'lucide-react';
+import { FaRobot } from 'react-icons/fa';
 import Select from 'react-select/async';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -794,10 +795,12 @@ export const MarketInsights: React.FC<MarketInsightsProps> = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex gap-2 items-center px-4 py-2 mb-4 rounded-full border shadow-lg backdrop-blur-md bg-white/80 border-[#63A361]/20"
+            className="inline-flex gap-2 items-center px-4 py-2 mb-4 rounded-full border shadow-lg backdrop-blur-md border-[#63A361]/20 bg-[#FDE7B3]/30 shadow-lg"
           >
-            <div className="w-2 h-2 bg-[#63A361] rounded-full animate-pulse" />
-            <span className="text-sm font-semibold text-[#63A361]">Live Market Updates</span>
+            <span className="text-[#63A361]">
+              <FaRobot className="w-4 h-4" />
+            </span>
+            <span className="text-sm font-thin text-[#63A361]">Live Market Updates</span>
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
