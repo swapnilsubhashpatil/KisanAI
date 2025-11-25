@@ -1,6 +1,9 @@
 # Kisan AI  
 Welcome to **Kisan AI**! 🌾  
 
+## 🚀 Live Deployment  
+**[Visit KisanAI - Live Application](http://kisanai-avishkaar.vercel.app)**
+
 ## Project Overview  
 **Kisan AI** is a comprehensive agricultural technology platform that revolutionizes farming practices through AI-driven solutions.  
 
