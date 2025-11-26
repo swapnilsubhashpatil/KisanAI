@@ -119,6 +119,6 @@ Let's keep the spirit of open source alive!
 If you have any inquiries or suggestions, please reach out:  
 - **Email:** [ayush421301@gmail.com](mailto:ayush421301@gmail.com)  
 - **X (Twitter):** [ayuxy027](https://x.com/ayuxy027)  
-- **GitHub:** [ayuxy027](https://github.com/ayuxy027).
+- **GitHub:** [ayuxy027](https://github.com/ayuxy027)
 
 ---
